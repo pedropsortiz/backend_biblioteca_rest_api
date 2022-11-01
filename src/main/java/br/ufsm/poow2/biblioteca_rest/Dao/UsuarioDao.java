@@ -8,9 +8,9 @@ public class UsuarioDao {
 
     public Usuario getUsuario(String login){
         if (login.equals("Pedro")){
-            return new Usuario("pedro.ortiz@gmail.com", new BCryptPasswordEncoder().encode("123"), "user");
+            return new Usuario("pedro.ortiz@gmail.com", new BCryptPasswordEncoder().encode("123"), "USER");
         } else if (login.equals("Jorge")) {
-            return new Usuario("jorge@gmail.com", new BCryptPasswordEncoder().encode("123"), "user");
+            return new Usuario("jorge@gmail.com", new BCryptPasswordEncoder().encode("123"), "ADMIN");
         } else {
             return null;
         }
