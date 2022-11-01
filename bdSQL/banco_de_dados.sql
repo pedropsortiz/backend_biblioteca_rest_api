@@ -53,3 +53,6 @@ ALTER TABLE Livro ADD FOREIGN KEY(idGenero) REFERENCES Genero (idGenero);
 ALTER TABLE Livro ADD FOREIGN KEY(idAutor) REFERENCES Autor (idAutor);
 ALTER TABLE UsuarioLivro ADD FOREIGN KEY(idUsuario) REFERENCES Usuario (idUsuario);
 ALTER TABLE UsuarioLivro ADD FOREIGN KEY(idLivro) REFERENCES Livro (idLivro);
+
+INSERT INTO Usuario (nomeUsuario, emailUsuario, senhaUsuario, permissaoUsuario) 
+VALUES ('Admin', 'admin_alexandria@admin.com', '1234', 'adm');
