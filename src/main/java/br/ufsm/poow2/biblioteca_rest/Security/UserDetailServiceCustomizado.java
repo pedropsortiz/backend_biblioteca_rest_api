@@ -18,9 +18,9 @@ public class UserDetailServiceCustomizado implements UserDetailsService {
         if (usuario == null){
             throw new UsernameNotFoundException("Usuário ou senha inválidos");
         }else{
-            UserDetails user = User.withUsername(usuario.getLogin())
-                    .password(usuario.getSenha())
-                    .authorities(usuario.getPermissao()).build();
+            UserDetails user = User.withUsername(usuario.getEmailUsuario())
+                    .password(usuario.getSenhaUsuario())
+                    .authorities(usuario.getPermissaoUsuario()).build();
             return user;
         }
     }

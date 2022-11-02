@@ -25,12 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) {
-//        auth.authenticationProvider(this.authProvider());
-//    }
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authenticationProvider(this.authProvider())
@@ -38,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.GET, "/teste").permitAll()
                 .antMatchers(HttpMethod.GET, "/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/cliente").hasAuthority("USER")
-                .antMatchers(HttpMethod.GET, "/cliente/clientes").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/livro").hasAuthority("usr")
+                .antMatchers(HttpMethod.GET, "/livro/livros").hasAuthority("adm")
                 .and().formLogin();
     }
 }

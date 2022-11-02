@@ -2,37 +2,57 @@ package br.ufsm.poow2.biblioteca_rest.Model;
 
 public class Usuario {
 
-    private String login;
-    private String senha;
-    private String permissao;
+    private int idUsuario;
+    private String nomeUsuario;
+    private String emailUsuario;
+    private String senhaUsuario;
+    private String permissaoUsuario;
 
-    public Usuario(String login, String senha, String permissao) {
-        this.login = login;
-        this.senha = senha;
-        this.permissao = permissao;
+    public Usuario(int idUsuario, String nomeUsuario, String emailUsuario, String senhaUsuario, String permissaoUsuario) {
+        this.idUsuario = idUsuario;
+        this.nomeUsuario = nomeUsuario;
+        this.emailUsuario = emailUsuario;
+        this.senhaUsuario = senhaUsuario;
+        this.permissaoUsuario = permissaoUsuario;
     }
 
-    public String getLogin() {
-        return login;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getNomeUsuario() {
+        return nomeUsuario;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
     }
 
-    public String getPermissao() {
-        return permissao;
+    public String getEmailUsuario() {
+        return emailUsuario;
     }
 
-    public void setPermissao(String permissao) {
-        this.permissao = permissao;
+    public void setEmailUsuario(String emailUsuario) {
+        this.emailUsuario = emailUsuario;
+    }
+
+    public String getSenhaUsuario() {
+        return senhaUsuario;
+    }
+
+    public void setSenhaUsuario(String senhaUsuario) {
+        this.senhaUsuario = senhaUsuario;
+    }
+
+    public String getPermissaoUsuario() {
+        return permissaoUsuario;
+    }
+
+    public void setPermissaoUsuario(String permissaoUsuario) {
+        this.permissaoUsuario = permissaoUsuario;
     }
 }
