@@ -70,4 +70,12 @@ public class Autor {
     public void setFotoAutor(String fotoAutor) {
         this.fotoAutor = fotoAutor;
     }
+
+    public boolean checarDataNascMorte(Date dataNascAutor, Date dataMorteAutor){
+        if (dataMorteAutor.after(dataMorteAutor)){
+            return true;
+        }
+        return false;
+    }
+
 }

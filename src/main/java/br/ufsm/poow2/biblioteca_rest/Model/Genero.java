@@ -28,4 +28,9 @@ public class Genero {
     public void setNomeGenero(String nomeGenero) {
         this.nomeGenero = nomeGenero;
     }
+
+//    public boolean buscarGenero(Strr){
+//
+//    }
+
 }
