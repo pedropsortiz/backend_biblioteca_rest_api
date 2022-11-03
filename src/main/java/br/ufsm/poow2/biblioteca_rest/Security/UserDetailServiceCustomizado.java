@@ -14,7 +14,6 @@ public class UserDetailServiceCustomizado implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = new UsuarioDao().getUsuario(username);
-        System.out.println("*******");
         if (usuario == null){
             throw new UsernameNotFoundException("Usuário ou senha inválidos");
         }else{
