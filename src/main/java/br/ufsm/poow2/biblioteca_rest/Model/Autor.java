@@ -1,6 +1,7 @@
 package br.ufsm.poow2.biblioteca_rest.Model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.sql.Date;
 
@@ -11,7 +12,7 @@ import java.sql.Date;
 @Builder
 public class Autor {
 
-    private int idAutor;
+    @Id private Long idAutor;
     private String nomeAutor;
     private Date dataNascAutor;
     private Date dataMorteAutor;
