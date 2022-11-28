@@ -1,7 +1,7 @@
-package br.ufsm.poow2.biblioteca_rest.Controller;
+package br.ufsm.poow2.biblioteca_rest.controller;
 
-import br.ufsm.poow2.biblioteca_rest.Dao.LivroDao;
-import br.ufsm.poow2.biblioteca_rest.Model.Livro;
+import br.ufsm.poow2.biblioteca_rest.dao.LivroDao;
+import br.ufsm.poow2.biblioteca_rest.model.Livro;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

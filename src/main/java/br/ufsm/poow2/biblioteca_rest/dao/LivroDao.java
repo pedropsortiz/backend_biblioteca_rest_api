@@ -1,6 +1,6 @@
-package br.ufsm.poow2.biblioteca_rest.Dao;
+package br.ufsm.poow2.biblioteca_rest.dao;
 
-import br.ufsm.poow2.biblioteca_rest.Model.Livro;
+import br.ufsm.poow2.biblioteca_rest.model.Livro;
 
 import java.util.ArrayList;
 

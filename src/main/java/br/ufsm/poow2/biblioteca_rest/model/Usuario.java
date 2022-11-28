@@ -1,4 +1,4 @@
-package br.ufsm.poow2.biblioteca_rest.Model;
+package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
@@ -14,5 +14,6 @@ public class Usuario {
     private String emailUsuario;
     private String senhaUsuario;
     private String permissaoUsuario;
+    private String tokenUsuario;
 
 }

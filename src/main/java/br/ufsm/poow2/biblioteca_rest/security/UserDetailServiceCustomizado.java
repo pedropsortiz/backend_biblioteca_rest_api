@@ -1,7 +1,7 @@
-package br.ufsm.poow2.biblioteca_rest.Security;
+package br.ufsm.poow2.biblioteca_rest.security;
 
-import br.ufsm.poow2.biblioteca_rest.Dao.UsuarioDao;
-import br.ufsm.poow2.biblioteca_rest.Model.Usuario;
+import br.ufsm.poow2.biblioteca_rest.dao.UsuarioDao;
+import br.ufsm.poow2.biblioteca_rest.model.Usuario;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
