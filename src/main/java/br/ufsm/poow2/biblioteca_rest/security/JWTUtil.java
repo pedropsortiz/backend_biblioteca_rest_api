@@ -1,6 +1,7 @@
 package br.ufsm.poow2.biblioteca_rest.security;
 
 import br.ufsm.poow2.biblioteca_rest.model.Usuario;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -24,6 +25,25 @@ public class JWTUtil {
                 .setExpiration(new Date(System.currentTimeMillis()+TEMPO_VIDA))
                 .signWith(SignatureAlgorithm.HS256, "alexadriapoow2")
                 .compact();
+    }
+
+    public boolean isTokenExpirado(String token){
+        return this.parseToken(token).getExpiration().before(new Date());
+    }
+
+    public String getUsernameToken(String token){
+        if (token != null){
+            return this.parseToken(token).getSubject();
+        }else{
+            return null;
+        }
+    }
+
+    private Claims parseToken(String token){
+        return Jwts.parser()
+                .setSigningKey("alexadriapoow2")
+                .parseClaimsJws(token.replace("Bearer", ""))
+                .getBody();
     }
 
 }
