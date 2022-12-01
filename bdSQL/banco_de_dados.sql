@@ -24,7 +24,7 @@ CREATE TABLE Autor
     dataNascAutor  DATE         NOT NULL,
     dataMorteAutor DATE,
     descricaoAutor VARCHAR(250),
-    fotoAutor      VARCHAR(250)
+    urlFotoAutor   VARCHAR(250)
 );
 
 
@@ -35,7 +35,8 @@ CREATE TABLE Livro
     descricaoLivro VARCHAR(250) NOT NULL,
     idGenero       INT          NOT NULL,
     idAutor        INT          NOT NULL,
-    capaLivro      VARCHAR(250),
+    urlCapaLivro   VARCHAR(250),
+    urlLivro   VARCHAR(250),
     qntdTotalLivro INT,
     qntdEmUsoLivro INT
 );
@@ -84,4 +85,4 @@ ALTER TABLE AutorGenero
 
 
 INSERT INTO Usuario (nomeUsuario, emailUsuario, senhaUsuario, permissaoUsuario)
-VALUES ('Admin', 'admin_alexandria@admin.com', '1234', 'adm');
+VALUES ('Admin', 'admin.alexandria@admin.com', '1234', 'adm');
