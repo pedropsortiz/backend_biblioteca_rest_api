@@ -31,8 +31,8 @@ public class UsuarioLivro {
     private int idLivro;
 
     @Column(name = "statusUsuarioLivro")
-    private @NotBlank  StatusUsuarioLivro statusUsuarioLivro;
+    private @NotBlank StatusUsuarioLivro statusUsuarioLivro;
 
-    public enum StatusUsuarioLivro { aprovacao, emprestado, atrasado }
+    public enum StatusUsuarioLivro { A, B, L }
 
 }

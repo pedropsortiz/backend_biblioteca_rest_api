@@ -22,6 +22,9 @@ public class Usuario {
     @Column(name = "nomeUsuario")
     private @NotBlank String nomeUsuario;
 
+    @Column(name = "nicknameUsuario")
+    private @NotBlank String nicknameUsuario;
+
     @Column(name = "emailUsuario")
     private @NotBlank String emailUsuario;
 

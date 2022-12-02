@@ -15,7 +15,7 @@ public class Genero {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idGenero;
+    private Integer idGenero;
 
     @Column(name = "nomeGenero")
     private @NotBlank String nomeGenero;
