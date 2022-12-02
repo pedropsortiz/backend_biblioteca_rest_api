@@ -2,14 +2,22 @@ package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
+@Entity
+@Table(name = "Genero")
 public class Genero {
 
-    private int idGenero;
-    private String nomeGenero;
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idGenero;
+
+    @Column(name = "nomeGenero")
+    private @NotBlank String nomeGenero;
 
 }

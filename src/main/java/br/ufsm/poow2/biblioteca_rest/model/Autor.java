@@ -1,7 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,10 +11,10 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "autor")
+@Table(name = "Autor")
 public class Autor {
 
-    @Id
+    @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAutor;
 
@@ -33,8 +32,6 @@ public class Autor {
 
     @Column(name = "urlFotoAutor")
     private String urlFotoAutor;
-    @javax.persistence.Id
-    private Long id;
 
     public boolean checarDataNascMorte(Date dataNascAutor, Date dataMorteAutor){
         if (dataMorteAutor.after(dataMorteAutor)){
@@ -43,11 +40,4 @@ public class Autor {
         return false;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }

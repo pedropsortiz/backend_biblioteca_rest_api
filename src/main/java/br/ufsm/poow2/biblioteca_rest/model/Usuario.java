@@ -2,18 +2,36 @@ package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
+@Table(name = "Usuario")
 public class Usuario {
 
+    @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUsuario;
-    private String nomeUsuario;
-    private String emailUsuario;
-    private String senhaUsuario;
-    private String permissaoUsuario;
+
+    @Column(name = "nomeUsuario")
+    private @NotBlank String nomeUsuario;
+
+    @Column(name = "emailUsuario")
+    private @NotBlank String emailUsuario;
+
+    @Column(name = "senhaUsuario")
+    private @NotBlank String senhaUsuario;
+
+    @Column(name = "permissaoUsuario")
+    private @NotBlank String permissaoUsuario;
+
+    @Column(name = "tokenUsuario")
     private String tokenUsuario;
 
 }

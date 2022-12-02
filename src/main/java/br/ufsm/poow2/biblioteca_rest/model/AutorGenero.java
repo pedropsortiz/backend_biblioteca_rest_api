@@ -2,14 +2,17 @@ package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
+import javax.persistence.*;
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
+@Table(name = "AutorGenero")
 public class AutorGenero {
 
-    private int idAutor;
-    private int idGenero;
+    private Integer idAutor;
+
+    private Integer idGenero;
 
 }
