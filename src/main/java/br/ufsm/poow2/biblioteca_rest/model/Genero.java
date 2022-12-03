@@ -9,15 +9,23 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "Genero")
+@Entity(name = "Genero")
+@Table
 public class Genero {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(
+            name = "idGenero",
+            updatable = false
+    )
     private Integer idGenero;
 
-    @Column(name = "nomeGenero")
-    private @NotBlank String nomeGenero;
+    @Column(
+            name = "nomeGenero",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
+    private String nomeGenero;
 
 }
