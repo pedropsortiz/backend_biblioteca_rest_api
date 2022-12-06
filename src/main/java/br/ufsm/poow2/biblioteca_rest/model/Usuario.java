@@ -2,17 +2,15 @@ package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Usuario")
+@Table
+@Entity(name = "Usuario")
 public class Usuario {
 
     @javax.persistence.Id

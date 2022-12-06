@@ -9,7 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Livro")
+@Table
+@Entity(name = "Livro")
 public class Livro {
 
     @javax.persistence.Id

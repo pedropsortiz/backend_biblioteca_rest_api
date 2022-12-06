@@ -10,8 +10,8 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "Autor")
+@Table
+@Entity(name = "Autor")
 public class Autor {
 
     @javax.persistence.Id

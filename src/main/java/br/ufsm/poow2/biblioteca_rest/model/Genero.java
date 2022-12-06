@@ -3,14 +3,13 @@ package br.ufsm.poow2.biblioteca_rest.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Genero")
 @Table
+@Entity(name = "Genero")
 public class Genero {
 
     @javax.persistence.Id
