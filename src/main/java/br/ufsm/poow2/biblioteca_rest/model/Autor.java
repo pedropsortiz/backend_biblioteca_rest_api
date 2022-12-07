@@ -28,7 +28,7 @@ public class Autor {
             name = "idAutor",
             updatable = false
     )
-    private Integer idAutor;
+    private Long idAutor;
 
     @Column(
             name = "nomeAutor",

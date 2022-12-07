@@ -27,7 +27,7 @@ public class Usuario {
             name = "idUsuario",
             updatable = false
     )
-    private int idUsuario;
+    private Long idUsuario;
 
     @Column(
             name = "nomeUsuario",

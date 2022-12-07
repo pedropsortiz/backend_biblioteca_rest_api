@@ -26,7 +26,7 @@ public class Livro {
             name = "idLivro",
             updatable = false
     )
-    private int idLivro;
+    private Long idLivro;
 
     @Column(
             name = "nomeLivro",
@@ -42,7 +42,9 @@ public class Livro {
     )
     private String descricaoLivro;
 
-    private int idAutor;
+    @ManyToOne
+    @JoinColumn(name = "idAutor")
+    private Autor autor;
 
     @Column(
             name = "urlCapaLivro",

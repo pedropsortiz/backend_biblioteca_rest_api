@@ -2,16 +2,25 @@ package br.ufsm.poow2.biblioteca_rest.model;
 
 import lombok.*;
 
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "LivroGenero")
+@Table
+@Entity(name = "LivroGenero")
 public class LivroGenero {
 
-    private int idLivro;
-    private int idGenero;
+    @ManyToOne
+    @JoinColumn(name = "idLivro")
+    private Livro livro;
+
+    @ManyToOne
+    @JoinColumn(name = "idGenero")
+    private Genero genero;
+
+    @Id
+    private Long id;
 
 }
