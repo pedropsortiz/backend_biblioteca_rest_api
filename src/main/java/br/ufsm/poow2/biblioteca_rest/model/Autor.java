@@ -14,23 +14,52 @@ import java.sql.Date;
 @Entity(name = "Autor")
 public class Autor {
 
-    @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @SequenceGenerator(
+            name = "autor_sequence",
+            sequenceName = "autor_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "autor_sequence"
+    )
+    @Column(
+            name = "idAutor",
+            updatable = false
+    )
     private Integer idAutor;
 
-    @Column(name = "nomeAutor")
+    @Column(
+            name = "nomeAutor",
+            nullable = false,
+            columnDefinition = "VARCHAR (255)"
+    )
     private @NotBlank String nomeAutor;
 
-    @Column(name = "nomeAutor")
-    private @NotBlank Date dataNascAutor;
+    @Column(
+            name = "dataNascAutor",
+            nullable = false,
+            columnDefinition = "DATE"
+    )
+    private Date dataNascAutor;
 
-    @Column(name = "dataMorteAutor")
+    @Column(
+            name = "dataMorteAutor",
+            columnDefinition = "DATE"
+    )
     private Date dataMorteAutor;
 
-    @Column(name = "descricaoAutor")
+    @Column(
+            name = "descricaoAutor",
+            columnDefinition = "VARCHAR (255)"
+    )
     private String descricaoAutor;
 
-    @Column(name = "urlFotoAutor")
+    @Column(
+            name = "urlFotoAutor",
+            columnDefinition = "VARCHAR (255)"
+    )
     private String urlFotoAutor;
 
     public boolean checarDataNascMorte(Date dataNascAutor, Date dataMorteAutor){
