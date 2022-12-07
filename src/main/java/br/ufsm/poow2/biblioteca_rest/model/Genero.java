@@ -12,19 +12,28 @@ import javax.persistence.*;
 @Entity(name = "Genero")
 public class Genero {
 
-    @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @SequenceGenerator(
+            name = "genero_sequence",
+            sequenceName = "genero_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "genero_sequence"
+    )
     @Column(
             name = "idGenero",
             updatable = false
     )
-    private Integer idGenero;
+    private Long idGenero;
 
     @Column(
             name = "nomeGenero",
             nullable = false,
-            columnDefinition = "TEXT"
+            columnDefinition = "VARCHAR (255)"
     )
     private String nomeGenero;
+
 
 }

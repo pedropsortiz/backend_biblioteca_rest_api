@@ -3,7 +3,6 @@ package br.ufsm.poow2.biblioteca_rest.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -13,25 +12,56 @@ import javax.validation.constraints.NotBlank;
 @Entity(name = "Livro")
 public class Livro {
 
-    @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @SequenceGenerator(
+            name = "livro_sequence",
+            sequenceName = "livro_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "livro_sequence"
+    )
+    @Column(
+            name = "idLivro",
+            updatable = false
+    )
     private int idLivro;
 
-    @Column(name = "nomeLivro")
-    private @NotBlank String nomeLivro;
+    @Column(
+            name = "nomeLivro",
+            nullable = false,
+            columnDefinition = "VARCHAR (255)"
+    )
+    private String nomeLivro;
 
-    @Column(name = "descricaoLivro")
+    @Column(
+            name = "descricaoLivro",
+            nullable = false,
+            columnDefinition = "VARCHAR (255)"
+    )
     private String descricaoLivro;
 
     private int idAutor;
 
-    @Column(name = "urlCapaLivro")
+    @Column(
+            name = "urlCapaLivro",
+            columnDefinition = "VARCHAR (255)"
+    )
     private String urlCapaLivro;
 
-    @Column(name = "qntdTotalLivro")
-    private @NotBlank Integer qntdTotalLivro;
+    @Column(
+            name = "qntdTotalLivro",
+            nullable = false,
+            columnDefinition = "INT"
+    )
+    private Integer qntdTotalLivro;
 
-    @Column(name = "qntdEmUsoLivro")
-    private @NotBlank Integer qntdEmUsoLivro;
+    @Column(
+            name = "qntdEmUsoLivro",
+            nullable = false,
+            columnDefinition = "INT"
+    )
+    private Integer qntdEmUsoLivro;
 
 }
