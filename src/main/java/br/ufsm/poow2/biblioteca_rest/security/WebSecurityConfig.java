@@ -56,5 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/livro").hasAuthority("usr")
                 .antMatchers(HttpMethod.GET, "/livro/livros").hasAuthority("adm");
         http.addFilterBefore(this.filtroAutenticacao(), UsernamePasswordAuthenticationFilter.class);
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 }
