@@ -8,19 +8,18 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
-@Entity(name = "AutorGenero")
+@Entity
+@Table(name = "AutorGenero")
 public class AutorGenero {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @ManyToOne
-    @JoinColumn(name = "idAutor")
     private Autor autor;
 
     @ManyToOne
-    @JoinColumn(name = "idGenero")
     private Genero genero;
-
-    @Id
-    private Long id;
 
 }

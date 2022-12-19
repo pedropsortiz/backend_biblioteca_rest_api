@@ -10,50 +10,28 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
-@Entity(name = "UsuarioLivro")
+@Entity
+@Table(name = "UsuarioLivro")
 public class UsuarioLivro {
 
     @Id
-    @SequenceGenerator(
-            name = "usuariolivro_sequence",
-            sequenceName = "usuariolivro_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "usuariolivro_sequence"
-    )
-    @Column(
-            name = "idUsuarioLivro",
-            updatable = false
-    )
-    private Long idUsuarioLivro;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idUsuarioLivro;
 
-    @Column(
-            name = "dataEmprestimoUsuarioLivro",
-            nullable = false,
-            columnDefinition = "DATE"
-    )
-    private Date dataEmprestimoUsuarioLivro;
+    @Column(name = "dataEmprestimoUsuarioLivro")
+    private @NotBlank Date dataEmprestimoUsuarioLivro;
 
-    @Column(
-            name = "dataDevolucaoUsuarioLivro",
-            nullable = false,
-            columnDefinition = "DATE"
-    )
-    private Date dataDevolucaoUsuarioLivro;
+    @Column(name = "dataDevolucaoUsuarioLivro")
+    private @NotBlank Date dataDevolucaoUsuarioLivro;
 
-    private int idUsuario;
+    @OneToOne
+    private @NotBlank Usuario idUsuario;
 
-    private int idLivro;
+    @OneToOne
+    private @NotBlank Livro idLivro;
 
-    @Column(
-            name = "statusUsuarioLivro",
-            nullable = false,
-            columnDefinition = "CHAR (1)"
-    )
-    private StatusUsuarioLivro statusUsuarioLivro;
+    @Column(name = "statusUsuarioLivro" )
+    private @NotBlank StatusUsuarioLivro statusUsuarioLivro;
 
     public enum StatusUsuarioLivro { A, B, L }
 

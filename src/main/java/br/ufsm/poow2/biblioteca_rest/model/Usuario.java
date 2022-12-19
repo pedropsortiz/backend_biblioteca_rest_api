@@ -14,54 +14,22 @@ import javax.validation.constraints.NotBlank;
 public class Usuario {
 
     @Id
-    @SequenceGenerator(
-            name = "usuario_sequence",
-            sequenceName = "usuario_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "usuario_sequence"
-    )
-    @Column(
-            name = "idUsuario",
-            updatable = false
-    )
-    private Long idUsuario;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idUsuario;
 
-    @Column(
-            name = "nomeUsuario",
-            nullable = false,
-            columnDefinition = "VARCHAR (255)"
-    )
-    private String nomeUsuario;
+    @Column(name = "nomeUsuario")
+    private @NotBlank String nomeUsuario;
 
-    @Column(
-            name = "emailUsuario",
-            nullable = false,
-            unique = true,
-            columnDefinition = "VARCHAR (255)"
-    )
-    private String emailUsuario;
+    @Column(name = "emailUsuario")
+    private @NotBlank String emailUsuario;
 
-    @Column(
-            name = "senhaUsuario",
-            nullable = false,
-            columnDefinition = "VARCHAR (255)"
-    )
+    @Column(name = "senhaUsuario")
     private @NotBlank String senhaUsuario;
 
-    @Column(
-            name = "permissaoUsuario",
-            nullable = false,
-            columnDefinition = "CHAR (3)"
-    )
-    private String permissaoUsuario;
+    @Column(name = "permissaoUsuario")
+    private @NotBlank String permissaoUsuario;
 
-    @Column(
-            name = "tokenUsuario",
-            columnDefinition = "VARCHAR (500)"
-    )
+    @Column(name = "tokenUsuario")
     private String tokenUsuario;
 
 }

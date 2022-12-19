@@ -10,63 +10,27 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
-@Entity(name = "Autor")
+@Entity
+@Table(name = "Autor")
 public class Autor {
 
     @Id
-    @SequenceGenerator(
-            name = "autor_sequence",
-            sequenceName = "autor_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "autor_sequence"
-    )
-    @Column(
-            name = "idAutor",
-            updatable = false
-    )
-    private Long idAutor;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idAutor;
 
-    @Column(
-            name = "nomeAutor",
-            nullable = false,
-            columnDefinition = "VARCHAR (255)"
-    )
+    @Column(name = "nomeAutor")
     private @NotBlank String nomeAutor;
 
-    @Column(
-            name = "dataNascAutor",
-            nullable = false,
-            columnDefinition = "DATE"
-    )
-    private Date dataNascAutor;
+    @Column(name = "dataNascAutor")
+    private @NotBlank Date dataNascAutor;
 
-    @Column(
-            name = "dataMorteAutor",
-            columnDefinition = "DATE"
-    )
+    @Column(name = "dataMorteAutor")
     private Date dataMorteAutor;
 
-    @Column(
-            name = "descricaoAutor",
-            columnDefinition = "VARCHAR (255)"
-    )
+    @Column(name = "descricaoAutor")
     private String descricaoAutor;
 
-    @Column(
-            name = "urlFotoAutor",
-            columnDefinition = "VARCHAR (255)"
-    )
+    @Column(name = "urlFotoAutor")
     private String urlFotoAutor;
-
-    public boolean checarDataNascMorte(Date dataNascAutor, Date dataMorteAutor){
-        if (dataMorteAutor.after(dataMorteAutor)){
-            return true;
-        }
-        return false;
-    }
 
 }
