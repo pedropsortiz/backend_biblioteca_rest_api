@@ -1,6 +1,5 @@
 package br.ufsm.poow2.biblioteca_rest.security;
 
-import br.ufsm.poow2.biblioteca_rest.dao.UsuarioDao;
 import br.ufsm.poow2.biblioteca_rest.model.Usuario;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +12,8 @@ public class UserDetailServiceCustomizado implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = new UsuarioDao().getUsuario(username);
+//        Usuario usuario = new UsuarioDao().getUsuario(username);
+        Usuario usuario = null;
         if (usuario == null){
             throw new UsernameNotFoundException("Usuário ou senha inválidos");
         }else{
