@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -15,24 +16,25 @@ public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idLivro;
+    private Integer idLivro;
 
     @Column(name = "nomeLivro")
-    private @NotBlank String nomeLivro;
+    private @NotNull  @NotBlank String nomeLivro;
 
     @Column(name = "descricaoLivro")
     private String descricaoLivro;
 
     @ManyToOne
-    private @NotBlank Autor autor;
+    @JoinColumn(name = "idAutor")
+    private @NotNull @NotBlank Autor autor;
 
     @Column(name = "urlCapaLivro")
     private String urlCapaLivro;
 
     @Column(name = "qntdTotalLivro")
-    private @NotBlank Integer qntdTotalLivro;
+    private @NotNull @NotBlank Integer qntdTotalLivro;
 
     @Column(name = "qntdEmUsoLivro")
-    private @NotBlank Integer qntdEmUsoLivro;
+    private @NotNull @NotBlank Integer qntdEmUsoLivro;
 
 }

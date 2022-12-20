@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class Genero {
     private Integer idGenero;
 
     @Column(name = "nomeGenero")
-    private @NotBlank String nomeGenero;
+    private @NotNull  @NotBlank String nomeGenero;
 
 }

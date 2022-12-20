@@ -1,9 +1,11 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Getter
@@ -19,12 +21,14 @@ public class Autor {
     private Integer idAutor;
 
     @Column(name = "nomeAutor")
-    private @NotBlank String nomeAutor;
+    private @NotNull @NotBlank String nomeAutor;
 
     @Column(name = "dataNascAutor")
-    private @NotBlank Date dataNascAutor;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private @NotNull @NotBlank Date dataNascAutor;
 
     @Column(name = "dataMorteAutor")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date dataMorteAutor;
 
     @Column(name = "descricaoAutor")
