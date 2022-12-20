@@ -16,7 +16,6 @@ public class AutorService {
     AutorRepo autorRepo;
 
     public void criarAutor(Autor autor){
-        System.out.println(autor.getDataNascAutor() + " é uma " + autor.getDataNascAutor().getClass());
         autorRepo.save(autor);
     }
 

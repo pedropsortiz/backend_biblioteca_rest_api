@@ -9,11 +9,9 @@ import br.ufsm.poow2.biblioteca_rest.service.LivroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,10 +28,26 @@ public class LivroController {
     public ResponseEntity<ApiResponse> criarLivro(@RequestBody LivroDto livroDto){
         Optional<Autor> optionalAutor = autorRepo.findById(livroDto.getIdAutor());
         if (!optionalAutor.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false, "O autor selecionado não existe!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, "O livro selecionado não existe!"), HttpStatus.BAD_REQUEST);
         }
         livroService.criarLivro(livroDto, optionalAutor.get());
-        return new ResponseEntity<>(new ApiResponse(true, "Novo autor criado com sucesso!"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse(true, "Novo livro criado com sucesso!"), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<LivroDto>> listarLivro(){
+        List<LivroDto> allLivros = livroService.getAllLivros();
+        return new ResponseEntity<>(allLivros, HttpStatus.OK);
+    }
+
+    @PostMapping("/editar/{idLivro}")
+    public ResponseEntity<ApiResponse> editarLivro(@PathVariable("idLivro") Integer idLivro, @RequestBody LivroDto livroDto) throws Exception {
+        Optional<Autor> optionalAutor = autorRepo.findById(livroDto.getIdAutor());
+        if (!optionalAutor.isPresent()){
+            return new ResponseEntity<>(new ApiResponse(false, "O livro selecionado não existe!"), HttpStatus.BAD_REQUEST);
+        }
+        livroService.editarLivro(livroDto, idLivro);
+        return new ResponseEntity<>(new ApiResponse(true, "Livro editado com sucesso!"), HttpStatus.CREATED);
     }
 
 }
