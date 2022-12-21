@@ -3,11 +3,8 @@ package br.ufsm.poow2.biblioteca_rest.controller;
 import br.ufsm.poow2.biblioteca_rest.DTO.EmprestimoDto;
 import br.ufsm.poow2.biblioteca_rest.DTO.LivroDto;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
-import br.ufsm.poow2.biblioteca_rest.model.Autor;
-import br.ufsm.poow2.biblioteca_rest.model.Emprestimo;
 import br.ufsm.poow2.biblioteca_rest.model.Livro;
 import br.ufsm.poow2.biblioteca_rest.model.Usuario;
-import br.ufsm.poow2.biblioteca_rest.repository.AutorRepo;
 import br.ufsm.poow2.biblioteca_rest.repository.LivroRepo;
 import br.ufsm.poow2.biblioteca_rest.repository.UsuarioRepo;
 import br.ufsm.poow2.biblioteca_rest.service.EmprestimoService;
@@ -36,19 +33,17 @@ public class EmprestimoController {
     public ResponseEntity<ApiResponse> criarEmprestimo(@RequestBody EmprestimoDto emprestimoDto){
         Optional<Livro> optionalLivro = livroRepo.findById(emprestimoDto.getIdLivro());
         Optional<Usuario> usuarioOptional = usuarioRepo.findById(emprestimoDto.getIdUsuario());
-
         if (!optionalLivro.isPresent() || !usuarioOptional.isPresent()){
             return new ResponseEntity<>(new ApiResponse(false, "O empréstimo selecionado não existe!"), HttpStatus.BAD_REQUEST);
         }
         emprestimoService.criarEmprestimo(emprestimoDto, optionalLivro.get(), usuarioOptional.get());
         return new ResponseEntity<>(new ApiResponse(true, "Novo empréstimo criado com sucesso!"), HttpStatus.CREATED);
-
     }
 
     @GetMapping("/")
     public ResponseEntity<List<EmprestimoDto>> listarEmprestimos(){
-        List<EmprestimoDto> emprestimoDtoList = emprestimoService.getEmprestimos();
-        return new ResponseEntity<>(emprestimoDtoList, HttpStatus.OK);
+        List<EmprestimoDto> allEmprestimos = emprestimoService.getAllEmprestimos();
+        return new ResponseEntity<>(allEmprestimos, HttpStatus.OK);
     }
 
     @PostMapping("/editar/{idEmprestimo}")

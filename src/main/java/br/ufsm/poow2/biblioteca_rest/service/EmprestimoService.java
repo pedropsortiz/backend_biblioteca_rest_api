@@ -1,10 +1,14 @@
 package br.ufsm.poow2.biblioteca_rest.service;
 
 import br.ufsm.poow2.biblioteca_rest.DTO.EmprestimoDto;
+import br.ufsm.poow2.biblioteca_rest.DTO.EmprestimoDto;
 import br.ufsm.poow2.biblioteca_rest.model.Livro;
 import br.ufsm.poow2.biblioteca_rest.model.Usuario;
 import br.ufsm.poow2.biblioteca_rest.model.Emprestimo;
 import br.ufsm.poow2.biblioteca_rest.repository.EmprestimoRepo;
+import br.ufsm.poow2.biblioteca_rest.repository.GeneroRepo;
+import br.ufsm.poow2.biblioteca_rest.repository.LivroRepo;
+import br.ufsm.poow2.biblioteca_rest.repository.UsuarioRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,44 +27,43 @@ public class EmprestimoService {
         emprestimo.setUsuario(usuario);
         emprestimo.setLivro(livro);
         emprestimo.setStatusEmprestimo(emprestimoDto.getStatusEmprestimo());
-        emprestimo.setDataEmprestimoUsuarioLivro(emprestimoDto.getDataEmprestimoUsuarioLivro());
-        emprestimo.setDataDevolucaoUsuarioLivro(emprestimoDto.getDataDevolucaoUsuarioLivro());
+        emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
+        emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
         emprestimoRepo.save(emprestimo);
     }
 
     public EmprestimoDto getEmprestimo(Emprestimo emprestimo){
         EmprestimoDto emprestimoDto = new EmprestimoDto();
-        emprestimo.setUsuario(emprestimo.getUsuario());
-        emprestimo.setLivro(emprestimo.getLivro());
-        emprestimo.setStatusEmprestimo(emprestimoDto.getStatusEmprestimo());
-        emprestimo.setDataEmprestimoUsuarioLivro(emprestimoDto.getDataEmprestimoUsuarioLivro());
-        emprestimo.setDataDevolucaoUsuarioLivro(emprestimoDto.getDataDevolucaoUsuarioLivro());
+        emprestimoDto.setIdEmprestimo(emprestimo.getIdEmprestimo());
+        emprestimoDto.setIdLivro(emprestimo.getLivro().getIdLivro());
+        emprestimoDto.setIdUsuario(emprestimo.getUsuario().getIdUsuario());
+        emprestimoDto.setStatusEmprestimo(emprestimo.getStatusEmprestimo());
+        emprestimoDto.setDataEmprestimo(emprestimo.getDataEmprestimo());
+        emprestimoDto.setDataDevolucao(emprestimo.getDataDevolucao());
         return emprestimoDto;
     }
 
-    public List<EmprestimoDto> getEmprestimos() {
+    public List<EmprestimoDto> getAllEmprestimos() {
         List<Emprestimo> emprestimoList = emprestimoRepo.findAll();
 
-        List<EmprestimoDto> emprestimoDtos = new ArrayList<>();
-        for (Emprestimo emprestimo : emprestimoList
+        List<EmprestimoDto> emprestimoDtoList = new ArrayList<>();
+        for (Emprestimo emprestimo: emprestimoList
         ) {
-            emprestimoDtos.add(getEmprestimo(emprestimo));
+            emprestimoDtoList.add(getEmprestimo(emprestimo));
         }
-        return emprestimoDtos;
+        return emprestimoDtoList;
     }
 
-    public void editarEmprestimo(EmprestimoDto emprestimoDto, Integer idUsuario) throws Exception {
-        Optional<Emprestimo> usuarioLivroOptional = emprestimoRepo.findById(idUsuario);
-        if (!usuarioLivroOptional.isPresent()){
+    public void editarEmprestimo(EmprestimoDto emprestimoDto, Integer idEmprestimo) throws Exception {
+        Optional<Emprestimo> emprestimoOptional = emprestimoRepo.findById(idEmprestimo);
+        if (!emprestimoOptional.isPresent()){
             throw new Exception("O empréstimo não existe!");
         }
-        Emprestimo emprestimo = usuarioLivroOptional.get();
+        Emprestimo emprestimo = emprestimoOptional.get();
 
-        emprestimo.setUsuario(emprestimo.getUsuario());
-        emprestimo.setLivro(emprestimo.getLivro());
         emprestimo.setStatusEmprestimo(emprestimoDto.getStatusEmprestimo());
-        emprestimo.setDataEmprestimoUsuarioLivro(emprestimoDto.getDataEmprestimoUsuarioLivro());
-        emprestimo.setDataDevolucaoUsuarioLivro(emprestimoDto.getDataDevolucaoUsuarioLivro());
+        emprestimo.setDataEmprestimo(emprestimoDto.getDataEmprestimo());
+        emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
         emprestimoRepo.save(emprestimo);
     }
 }

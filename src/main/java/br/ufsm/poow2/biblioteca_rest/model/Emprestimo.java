@@ -1,10 +1,9 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Getter
@@ -19,21 +18,25 @@ public class Emprestimo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEmprestimo;
 
-    @Column(name = "dataEmprestimoUsuarioLivro")
-    private @NotNull  @NotBlank Date dataEmprestimoUsuarioLivro;
+    @Column(name = "dataEmprestimo")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date dataEmprestimo;
 
-    @Column(name = "dataDevolucaoUsuarioLivro")
-    private @NotNull @NotBlank Date dataDevolucaoUsuarioLivro;
+    @Column(name = "dataDevolucao")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date dataDevolucao;
 
-    @OneToOne
-    private @NotNull @NotBlank Usuario usuario;
+    @ManyToOne
+    private Usuario usuario;
 
-    @OneToOne
-    private @NotNull @NotBlank Livro livro;
+    @ManyToOne
+    private Livro livro;
 
-    @Column(name = "statusEmprestimo" )
-    private @NotNull @NotBlank StatusEmprestimo statusEmprestimo;
+    @Column(name = "statusEmprestimo", nullable = false)
+    private StatusEmprestimo statusEmprestimo;
 
-    public enum StatusEmprestimo { A, B, L }
+    public enum StatusEmprestimo {
+        ATRASADO, APROVADO, ESPERA
+    }
 
 }

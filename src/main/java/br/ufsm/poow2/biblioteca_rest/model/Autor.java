@@ -20,12 +20,12 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAutor;
 
-    @Column(name = "nomeAutor")
-    private @NotNull @NotBlank String nomeAutor;
+    @Column(name = "nomeAutor", nullable = false)
+    private String nomeAutor;
 
-    @Column(name = "dataNascAutor")
+    @Column(name = "dataNascAutor", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private @NotNull @NotBlank Date dataNascAutor;
+    private Date dataNascAutor;
 
     @Column(name = "dataMorteAutor")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")

@@ -9,12 +9,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "LivroGenero")
+@Table(name = "LivroGeneroRepo")
 public class LivroGenero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer idLivroGenero;
 
     @ManyToOne
     private Livro livro;

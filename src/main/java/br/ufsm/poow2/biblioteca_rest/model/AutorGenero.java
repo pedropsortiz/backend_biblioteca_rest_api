@@ -14,7 +14,7 @@ public class AutorGenero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer idAutorGenero;
 
     @ManyToOne
     private Autor autor;
