@@ -12,12 +12,12 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "UsuarioLivro")
-public class UsuarioLivro {
+@Table(name = "Emprestimo")
+public class Emprestimo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUsuarioLivro;
+    private Integer idEmprestimo;
 
     @Column(name = "dataEmprestimoUsuarioLivro")
     private @NotNull  @NotBlank Date dataEmprestimoUsuarioLivro;
@@ -31,9 +31,9 @@ public class UsuarioLivro {
     @OneToOne
     private @NotNull @NotBlank Livro livro;
 
-    @Column(name = "statusUsuarioLivro" )
-    private @NotNull @NotBlank StatusUsuarioLivro statusUsuarioLivro;
+    @Column(name = "statusEmprestimo" )
+    private @NotNull @NotBlank StatusEmprestimo statusEmprestimo;
 
-    public enum StatusUsuarioLivro { A, B, L }
+    public enum StatusEmprestimo { A, B, L }
 
 }
