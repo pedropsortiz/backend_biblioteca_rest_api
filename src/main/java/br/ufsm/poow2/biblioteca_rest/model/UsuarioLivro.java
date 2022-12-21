@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Getter
@@ -19,19 +20,19 @@ public class UsuarioLivro {
     private Integer idUsuarioLivro;
 
     @Column(name = "dataEmprestimoUsuarioLivro")
-    private @NotBlank Date dataEmprestimoUsuarioLivro;
+    private @NotNull  @NotBlank Date dataEmprestimoUsuarioLivro;
 
     @Column(name = "dataDevolucaoUsuarioLivro")
-    private @NotBlank Date dataDevolucaoUsuarioLivro;
+    private @NotNull @NotBlank Date dataDevolucaoUsuarioLivro;
 
     @OneToOne
-    private @NotBlank Usuario idUsuario;
+    private @NotNull @NotBlank Usuario usuario;
 
     @OneToOne
-    private @NotBlank Livro idLivro;
+    private @NotNull @NotBlank Livro livro;
 
     @Column(name = "statusUsuarioLivro" )
-    private @NotBlank StatusUsuarioLivro statusUsuarioLivro;
+    private @NotNull @NotBlank StatusUsuarioLivro statusUsuarioLivro;
 
     public enum StatusUsuarioLivro { A, B, L }
 

@@ -5,7 +5,6 @@ import br.ufsm.poow2.biblioteca_rest.model.Autor;
 import br.ufsm.poow2.biblioteca_rest.model.Livro;
 import br.ufsm.poow2.biblioteca_rest.repository.LivroRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class LivroService {
 
         List<LivroDto> livroDtos = new ArrayList<>();
         for (Livro livro: livroList
-             ) {
+        ) {
             livroDtos.add(getLivroDto(livro));
         }
         return livroDtos;

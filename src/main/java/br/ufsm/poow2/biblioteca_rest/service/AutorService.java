@@ -11,7 +11,6 @@ import java.util.Optional;
 @Service
 public class AutorService {
 
-
     @Autowired
     AutorRepo autorRepo;
 
@@ -33,9 +32,13 @@ public class AutorService {
         autorRepo.save(autor.get());
     }
 
-
     public boolean findById(Integer idAutor) {
         return autorRepo.findById(idAutor).isPresent();
+    }
+
+    public Autor findAutor(Integer idAutor) {
+        Optional<Autor> autor = autorRepo.findById(idAutor);
+        return autor.get();
     }
 
 }
