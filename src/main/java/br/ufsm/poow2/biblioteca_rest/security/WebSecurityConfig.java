@@ -22,13 +22,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-//    public DaoAuthenticationProvider authProvider(){
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(this.userDetailsService);
-//        authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
-//        return authProvider;
-//    }
-
     @Autowired
     public void configureAutenticacao(AuthenticationManagerBuilder auth) throws Exception{
         auth.userDetailsService(this.userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
@@ -57,6 +50,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/livro/livros").hasAuthority("adm");
         http.addFilterBefore(this.filtroAutenticacao(), UsernamePasswordAuthenticationFilter.class);
         http.csrf().disable();
-        http.headers().frameOptions().disable();
     }
 }

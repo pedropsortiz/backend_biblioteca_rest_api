@@ -21,13 +21,13 @@ public class FiltroAutenticacao extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         String url = request.getRequestURI();
 
         try {
 
             if (url.contains("/login")){
                 String token = request.getHeader("Authorization");
+
                 String username = new JWTUtil().getUsernameToken(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
