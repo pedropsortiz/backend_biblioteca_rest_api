@@ -37,4 +37,13 @@ public class AutorController {
         return new ResponseEntity<>(new ApiResponse(true, "O autor foi editado com sucesso!"), HttpStatus.OK);
     }
 
+    @PostMapping("/deletar/{idAutor}")
+    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAutor") Integer idAutor){
+        if (!autorService.findById(idAutor)){
+            return new ResponseEntity<>(new ApiResponse(false, "O autor não existe ou não foi encontrado!"), HttpStatus.OK);
+        }
+        autorService.deletarAutor(idAutor);
+        return new ResponseEntity<>(new ApiResponse(true, "O autor foi deletado com sucesso!"), HttpStatus.OK);
+    }
+
 }

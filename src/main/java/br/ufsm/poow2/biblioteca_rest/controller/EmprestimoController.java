@@ -58,4 +58,10 @@ public class EmprestimoController {
         return new ResponseEntity<>(new ApiResponse(true, "Empréstimo editado com sucesso!"), HttpStatus.CREATED);
     }
 
+    @PostMapping("/deletar/{idEmprestimo}")
+    public ResponseEntity<ApiResponse> deletarLivro(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
+        emprestimoService.deletarEmprestimo(idEmprestimo);
+        return new ResponseEntity<>(new ApiResponse(true, "Empréstimo deletado com sucesso!"), HttpStatus.OK);
+    }
+
 }

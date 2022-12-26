@@ -41,4 +41,7 @@ public class AutorService {
         return autor.get();
     }
 
+    public void deletarAutor(Integer idAutor) {
+        autorRepo.deleteById(idAutor);
+    }
 }

@@ -17,19 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    final
+    @Autowired
     UsuarioService usuarioService;
 
-    private final AuthenticationManager authenticationManager;
-
-    public LoginController(AuthenticationManager authenticationManager, UsuarioService usuarioService) {
-        this.authenticationManager = authenticationManager;
-        this.usuarioService = usuarioService;
-    }
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
     public ResponseEntity<Object> autenticacao(@RequestBody Usuario usuario){
-        System.out.println("Email: " + usuario.getEmailUsuario() + "\nSenha: " + usuario.getSenhaUsuario());
         try{
             final Authentication authentication = this.authenticationManager
                     .authenticate(

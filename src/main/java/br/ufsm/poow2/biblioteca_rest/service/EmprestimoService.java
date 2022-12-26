@@ -66,4 +66,8 @@ public class EmprestimoService {
         emprestimo.setDataDevolucao(emprestimoDto.getDataDevolucao());
         emprestimoRepo.save(emprestimo);
     }
+
+    public void deletarEmprestimo(Integer idEmprestimo) {
+        emprestimoRepo.deleteById(idEmprestimo);
+    }
 }

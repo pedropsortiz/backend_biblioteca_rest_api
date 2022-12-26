@@ -50,4 +50,10 @@ public class LivroController {
         return new ResponseEntity<>(new ApiResponse(true, "Livro editado com sucesso!"), HttpStatus.CREATED);
     }
 
+    @PostMapping("/deletar/{idLivro}")
+    public ResponseEntity<ApiResponse> deletarLivro(@PathVariable("idLivro") Integer idLivro) throws Exception {
+        livroService.deletarLivro(idLivro);
+        return new ResponseEntity<>(new ApiResponse(true, "Livro deletado com sucesso!"), HttpStatus.OK);
+    }
+
 }

@@ -64,4 +64,8 @@ public class LivroService {
         livro.setQntdEmUsoLivro(livroDto.getQntdEmUsoLivro());
         livroRepo.save(livro);
     }
+
+    public void deletarLivro(Integer idLivro) {
+        livroRepo.deleteById(idLivro);
+    }
 }

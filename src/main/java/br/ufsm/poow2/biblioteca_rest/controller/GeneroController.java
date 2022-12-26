@@ -37,4 +37,13 @@ public class GeneroController {
        return new ResponseEntity<>(new ApiResponse(true, "A categoria foi editada com sucesso!"), HttpStatus.OK);
     }
 
+    @PostMapping("/deletar/{generoId}")
+    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("generoId") Integer generoId){
+        if (!generoService.findById(generoId)){
+            return new ResponseEntity<>(new ApiResponse(false, "O gênero não existe ou não foi encontrado!"), HttpStatus.OK);
+        }
+        generoService.deletarGenero(generoId);
+        return new ResponseEntity<>(new ApiResponse(true, "O gênero foi deletado com sucesso!"), HttpStatus.OK);
+    }
+
 }

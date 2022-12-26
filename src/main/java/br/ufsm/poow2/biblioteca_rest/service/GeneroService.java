@@ -28,8 +28,10 @@ public class GeneroService {
         generoRepo.save(genero.get());
     }
 
-
     public boolean findById(Integer generoId) {
         return generoRepo.findById(generoId).isPresent();
+    }
+    public void deletarGenero(Integer generoId) {
+        generoRepo.deleteById(generoId);
     }
 }

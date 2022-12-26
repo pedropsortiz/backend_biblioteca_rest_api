@@ -12,12 +12,8 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    final
+    @Autowired
     UsuarioRepo usuarioRepo;
-
-    public UsuarioService(UsuarioRepo usuarioRepo) {
-        this.usuarioRepo = usuarioRepo;
-    }
 
     public boolean criarUsuario(Usuario usuario){
         String senha = usuario.getSenhaUsuario();
@@ -48,12 +44,14 @@ public class UsuarioService {
     }
 
     public Usuario getUsuarioByEmail(String emailUsuario){
-        Usuario usuario = usuarioRepo.findByEmailUsuario(emailUsuario);
-        return usuario;
+        return usuarioRepo.findUsuarioByEmailUsuario(emailUsuario);
     }
 
     public boolean findById(Integer idUsuario) {
         return usuarioRepo.findById(idUsuario).isPresent();
     }
 
+    public void deletarUsuario(Integer idUsuario) {
+        usuarioRepo.deleteById(idUsuario);
+    }
 }
