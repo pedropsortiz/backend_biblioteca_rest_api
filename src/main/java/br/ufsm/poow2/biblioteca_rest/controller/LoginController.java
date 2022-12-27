@@ -36,11 +36,11 @@ public class LoginController {
             if (authentication.isAuthenticated()){
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                Usuario usuarioResponse = usuarioService.getUsuarioByEmail(usuario.getEmailUsuario());
 
                 System.out.println("Gerando TOCKEN de autenticação");
-                String token = new JWTUtil().geraToken(usuario);
+                String token = new JWTUtil().geraToken(usuarioResponse);
                 usuarioService.atualizarTokenJWT(usuario.getEmailUsuario(), token);
-                Usuario usuarioResponse = usuarioService.getUsuarioByEmail(usuario.getEmailUsuario());
 
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
             }

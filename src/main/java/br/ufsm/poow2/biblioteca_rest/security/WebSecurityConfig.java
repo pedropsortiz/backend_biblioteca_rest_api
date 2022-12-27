@@ -47,16 +47,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                // Desativa a proteção contra ataques CSRF
+                .csrf().disable()
+                // Configura a criação de sessão como estadoless
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests()
+                // Configura as autorizações para as requisições HTTP
+                .authorizeRequests()
+                // Permite acesso a todas as requisições GET na raiz do site
                 .antMatchers(HttpMethod.GET, "/").permitAll()
-                .antMatchers(HttpMethod.GET, "/teste").permitAll()
+                // Permite acesso a todas as requisições POST no caminho "/login"
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/livro").hasAuthority("usr")
-                .antMatchers(HttpMethod.GET, "/livro/livros").hasAuthority("adm");
+                // Exige autoridade "adm" para as requisições POST nos caminhos "/genero" e "/genero/criar"
+                .antMatchers(HttpMethod.POST, "/genero").hasAuthority("adm")
+                .antMatchers(HttpMethod.POST, "/genero/criar").hasAuthority("adm");
+        // Adiciona o filtro de autenticação antes do filtro de autenticação de senha do usuário
         http.addFilterBefore(this.filtroAutenticacao(), UsernamePasswordAuthenticationFilter.class);
-        http.csrf().disable();
-        http.headers().frameOptions().disable();
     }
+
 }

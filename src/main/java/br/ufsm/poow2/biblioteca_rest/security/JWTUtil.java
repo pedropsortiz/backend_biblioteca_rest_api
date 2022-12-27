@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class JWTUtil {
 
-    public static final long TEMPO_VIDA = Duration.ofSeconds(40).toMillis();
+    public static final long TEMPO_VIDA = Duration.ofDays(3).toMillis();
 
     public String geraToken(Usuario usuario){
 

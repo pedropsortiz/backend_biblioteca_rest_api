@@ -37,4 +37,13 @@ public class Autor {
     @Column(name = "urlFotoAutor")
     private String urlFotoAutor;
 
+    public void update(Autor novosValores) {
+        this.nomeAutor = novosValores.nomeAutor;
+        this.descricaoAutor = novosValores.descricaoAutor;
+        this.dataMorteAutor = novosValores.dataMorteAutor;
+        this.urlFotoAutor = novosValores.urlFotoAutor;
+        this.dataNascAutor = novosValores.dataNascAutor;
+    }
+
+
 }

@@ -29,7 +29,6 @@ public class UserDetailServiceCustomizado implements UserDetailsService {
                 .password(usuario.getSenhaUsuario())
                 .authorities(usuario.getPermissaoUsuario())
                 .build();
-
         return user;
 
     }
