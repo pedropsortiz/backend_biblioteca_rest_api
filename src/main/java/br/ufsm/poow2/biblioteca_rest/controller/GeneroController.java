@@ -18,10 +18,7 @@ public class GeneroController {
    GeneroService generoService;
 
    @PostMapping("/criar")
-   public ResponseEntity<ApiResponse> criarGenero(@RequestBody Genero genero){
-        generoService.criarGenero(genero);
-        return new ResponseEntity<>(new ApiResponse(true, "Nova categoria criada com sucesso!"), HttpStatus.CREATED);
-   }
+   public ResponseEntity<ApiResponse> criarGenero(@RequestBody Genero genero){ return generoService.criarGenero(genero); }
 
     @GetMapping("/listar")
     public List<Genero> listarGenero(){

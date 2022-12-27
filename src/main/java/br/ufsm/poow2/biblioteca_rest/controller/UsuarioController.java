@@ -18,10 +18,7 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarUsuario(@RequestBody Usuario usuario){
-        usuarioService.criarUsuario(usuario);
-        return new ResponseEntity<>(new ApiResponse(true, "Novo usuario criado com sucesso!"), HttpStatus.CREATED);
-    }
+    public ResponseEntity<ApiResponse> criarUsuario(@RequestBody Usuario usuario){ return usuarioService.criarUsuario(usuario); }
 
     @GetMapping("/listar")
     public List<Usuario> listarUsuario(){
