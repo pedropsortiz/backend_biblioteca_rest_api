@@ -26,12 +26,7 @@ public class GeneroController {
     }
 
     @PostMapping("/editar/{generoId}")
-    public ResponseEntity<ApiResponse> editarGenero(@PathVariable("generoId") Integer generoId, @RequestBody Genero genero){
-       if (!generoService.findById(generoId)){
-           return new ResponseEntity<>(new ApiResponse(false, "A categoria não existe ou não foi encontrada!"), HttpStatus.OK);
-       }
-       generoService.editarGenero(generoId, genero);
-       return new ResponseEntity<>(new ApiResponse(true, "A categoria foi editada com sucesso!"), HttpStatus.OK);
+    public ResponseEntity<ApiResponse> editarGenero(@PathVariable("generoId") Integer generoId, @RequestBody Genero genero){ return generoService.editarGenero(generoId, genero);
     }
 
     @PostMapping("/deletar/{generoId}")

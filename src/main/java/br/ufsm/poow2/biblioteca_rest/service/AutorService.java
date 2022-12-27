@@ -47,7 +47,7 @@ public class AutorService {
             autorRepo.save(autor);
             return new ResponseEntity<>(new ApiResponse(true, "O autor foi editado com sucesso!"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ApiResponse(false, "O autor não existe ou não foi encontrado!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(false, "O autor não existe ou não foi encontrado!"), HttpStatus.NOT_FOUND);
     }
 
     public boolean findById(Integer idAutor) {
@@ -58,12 +58,13 @@ public class AutorService {
         return !dataMorte.before(dataNasc);
     }
 
-    public void deletarAutor(Integer idAutor) throws EntityNotFoundException {
+    public ResponseEntity<ApiResponse> deletarAutor(Integer idAutor) {
         Optional<Autor> autor = autorRepo.findById(idAutor);
         if (!autor.isPresent()) {
-            throw new EntityNotFoundException("Autor não encontrado.");
+            return new ResponseEntity<>(new ApiResponse(false, "O autor não existe ou não foi encontrado!"), HttpStatus.NOT_FOUND);
         }
         autorRepo.deleteById(idAutor);
+        return new ResponseEntity<>(new ApiResponse(true, "O autor foi excluido com sucesso!"), HttpStatus.OK);
     }
 
 }

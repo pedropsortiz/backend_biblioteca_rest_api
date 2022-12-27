@@ -35,10 +35,16 @@ public class GeneroService {
     public List<Genero> listarGenero(){
         return generoRepo.findAll();
     }
-    public void editarGenero(Integer generoId, Genero editarGenero){
-        Optional<Genero> genero = generoRepo.findById(generoId);
-        genero.get().setNomeGenero(editarGenero.getNomeGenero());
-        generoRepo.save(genero.get());
+
+    public ResponseEntity<ApiResponse> editarGenero(Integer generoId, Genero editarGenero) {
+        Optional<Genero> optionalGenero = generoRepo.findById(generoId);
+        if (optionalGenero.isPresent()) {
+            Genero genero = optionalGenero.get();
+            genero.update(editarGenero);
+            generoRepo.save(genero);
+            return new ResponseEntity<>(new ApiResponse(true, "O genero foi editado com sucesso!"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ApiResponse(false, "O genero não foi encontrado ou não existe!"), HttpStatus.NOT_FOUND);
     }
 
     public boolean findById(Integer generoId) {

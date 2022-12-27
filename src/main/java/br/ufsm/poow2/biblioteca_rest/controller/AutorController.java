@@ -29,12 +29,6 @@ public class AutorController {
     public ResponseEntity<ApiResponse> editarAutor(@PathVariable("idAutor") Integer idAutor, @RequestBody Autor autor){ return autorService.editarAutor(idAutor, autor); }
 
     @PostMapping("/deletar/{idAutor}")
-    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAutor") Integer idAutor){
-        if (!autorService.findById(idAutor)){
-            return new ResponseEntity<>(new ApiResponse(false, "O autor não existe ou não foi encontrado!"), HttpStatus.OK);
-        }
-        autorService.deletarAutor(idAutor);
-        return new ResponseEntity<>(new ApiResponse(true, "O autor foi deletado com sucesso!"), HttpStatus.OK);
-    }
+    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAutor") Integer idAutor){ return autorService.deletarAutor(idAutor); }
 
 }

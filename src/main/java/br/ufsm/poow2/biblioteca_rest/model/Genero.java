@@ -21,4 +21,7 @@ public class Genero {
     @Column(name = "nomeGenero")
     private @NotNull  @NotBlank String nomeGenero;
 
+    public void update(Genero novosValores) {
+        this.nomeGenero = novosValores.nomeGenero;
+    }
 }
