@@ -26,7 +26,8 @@ public class UsuarioService {
         return false;
     }
 
-    public void atualizarTokenJWT(Usuario usuario, String tokenJWT){
+    public void atualizarTokenJWT(String emailUsuario, String tokenJWT){
+        Usuario usuario = usuarioRepo.findUsuarioByEmailUsuario(emailUsuario);
         usuario.setTokenUsuario(tokenJWT);
         usuarioRepo.save(usuario);
     }

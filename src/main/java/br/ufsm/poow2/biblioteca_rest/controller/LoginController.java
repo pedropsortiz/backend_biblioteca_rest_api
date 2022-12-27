@@ -39,10 +39,10 @@ public class LoginController {
 
                 System.out.println("Gerando TOCKEN de autenticação");
                 String token = new JWTUtil().geraToken(usuario);
+                usuarioService.atualizarTokenJWT(usuario.getEmailUsuario(), token);
+                Usuario usuarioResponse = usuarioService.getUsuarioByEmail(usuario.getEmailUsuario());
 
-                usuarioService.atualizarTokenJWT(usuario, token);
-
-                return new ResponseEntity<>(usuario, HttpStatus.OK);
+                return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
             }
         }catch(Exception E){
             E.printStackTrace();
