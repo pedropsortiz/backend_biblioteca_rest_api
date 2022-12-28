@@ -17,7 +17,7 @@ public class BookService {
     @Autowired
     BookRepository bookRepository;
 
-    public void createBook(BookDto dto, Author author) {
+    public void addBook(BookDto dto, Author author) {
         Book book = new Book();
         book.setName(dto.getName());
         book.setDescription(dto.getDescription());
@@ -40,7 +40,7 @@ public class BookService {
         return dto;
     }
 
-    public List<BookDto> getAllBooks() {
+    public List<BookDto> findAllBooks() {
         List<Book> books = bookRepository.findAll();
 
         List<BookDto> dtos = new ArrayList<>();
@@ -60,7 +60,7 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void deleteBook(Integer id) {
+    public void deleteBookById(Integer id) {
         bookRepository.deleteById(id);
     }
 }

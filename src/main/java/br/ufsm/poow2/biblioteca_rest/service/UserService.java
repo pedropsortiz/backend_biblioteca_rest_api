@@ -20,7 +20,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public ResponseEntity<ApiResponse> createUser(User user) {
+    public ResponseEntity<ApiResponse> addUser(User user) {
         String password = user.getPassword();
         String email = user.getEmail();
         String permission = user.getPermission();
@@ -195,7 +195,7 @@ public class UserService {
         return userRepository.findUserByEmail(email);
     }
 
-    public boolean existsById(Integer idUsuario) {
+    public boolean doesUserExists(Integer idUsuario) {
         return userRepository.existsById(idUsuario);
     }
 

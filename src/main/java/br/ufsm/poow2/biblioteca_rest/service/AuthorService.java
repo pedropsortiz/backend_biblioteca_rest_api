@@ -18,7 +18,7 @@ public class AuthorService {
     @Autowired
     AuthorRepository authorRepository;
 
-    public ResponseEntity<ApiResponse> createAuthor(Author author) {
+    public ResponseEntity<ApiResponse> addAuthor(Author author) {
         ResponseEntity<ApiResponse> response;
 
         // Verifica se a data de morte foi informada
@@ -37,7 +37,7 @@ public class AuthorService {
         return response;
     }
 
-    public List<Author> listAuthors() {
+    public List<Author> listAllAuthors() {
         // Retorna todos os autores do repositório
         return authorRepository.findAll();
     }
@@ -70,7 +70,7 @@ public class AuthorService {
         return response;
     }
 
-    public ResponseEntity<ApiResponse> deleteAuthor(Integer id) {
+    public ResponseEntity<ApiResponse> deleteAuthorById(Integer id) {
         // Busca o autor no repositório pelo ID informado
         Optional<Author> author = authorRepository.findById(id);
         ResponseEntity<ApiResponse> response;
@@ -87,11 +87,6 @@ public class AuthorService {
         // Retorna mensagem de sucesso
         response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O autor foi excluido com sucesso!"));
         return response;
-    }
-
-    public boolean isAuthorIdValid(Integer id) {
-        // Verifica se o ID informado corresponde a um autor existente no repositório
-        return authorRepository.existsById(id);
     }
 
     private boolean isValidDeathDate(Date dateOfDeath, Date dateOfBirth) {

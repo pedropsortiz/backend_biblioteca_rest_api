@@ -17,7 +17,7 @@ public class GenreService {
     @Autowired
     GenreRepository genreRepository;
 
-    public ResponseEntity<ApiResponse> createGender(Genre genre){
+    public ResponseEntity<ApiResponse> addGenre(Genre genre){
         try {
             genreRepository.save(genre);
             return new ResponseEntity<>(new ApiResponse(true, "Nova categoria criada com sucesso!"), HttpStatus.CREATED);
@@ -26,44 +26,40 @@ public class GenreService {
         }
     }
 
-    public List<Genre> listarGenero(){
+    public List<Genre> findAllGenres(){
         return genreRepository.findAll();
     }
 
-    public ResponseEntity<ApiResponse> editarGenero(Integer generoId, Genre editarGenero) {
-        Optional<Genre> optionalGenero = genreRepository.findById(generoId);
+    public ResponseEntity<ApiResponse> updateGenre(Integer id, Genre editarGenero) {
+        Optional<Genre> optionalGenero = genreRepository.findById(id);
         if (!optionalGenero.isPresent()) {
             return new ResponseEntity<>(new ApiResponse(false, "O gênero não foi encontrado ou não existe!"), HttpStatus.NOT_FOUND);
         }
         try {
-            Genre genero = optionalGenero.get();
-            genero.update(editarGenero);
-            genreRepository.save(genero);
+            Genre genre = optionalGenero.get();
+            genre.update(editarGenero);
+            genreRepository.save(genre);
             return new ResponseEntity<>(new ApiResponse(true, "O gênero foi editado com sucesso!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiResponse(false, "Falha ao editar gênero!"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public boolean findById(Integer generoId) {
-        return genreRepository.findById(generoId).isPresent();
-    }
-
-    public ResponseEntity<ApiResponse> deletarGenero(Integer generoId) {
-        Optional<Genre> genero = genreRepository.findById(generoId);
-        if (!genero.isPresent()) {
+    public ResponseEntity<ApiResponse> deleteGenreById(Integer id) {
+        Optional<Genre> genre = genreRepository.findById(id);
+        if (!genre.isPresent()) {
             return new ResponseEntity<>(new ApiResponse(false, "O gênero não existe ou não foi encontrado!"), HttpStatus.BAD_REQUEST);
         }
 
         try {
-            genreRepository.deleteById(generoId);
+            genreRepository.deleteById(id);
             return new ResponseEntity<>(new ApiResponse(true, "O gênero foi deletado com sucesso!"), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiResponse(false, "Erro ao excluir gênero!"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public Genre findGenderByName(String nomeGenero){
+    public Genre findGenreByName(String nomeGenero){
         return genreRepository.findGenreByName(nomeGenero);
     }
 

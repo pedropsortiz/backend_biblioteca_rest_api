@@ -18,7 +18,7 @@ public class LoanService {
     @Autowired
     LoanRepository loanRepository;
 
-    public void createLoan(LoanDto dto, Book book, User user) {
+    public void addLoan(LoanDto dto, Book book, User user) {
         Loan loan = new Loan();
         loan.setUser(user);
         loan.setBook(book);
@@ -39,7 +39,7 @@ public class LoanService {
         return dto;
     }
 
-    public List<LoanDto> getAllLoans() {
+    public List<LoanDto> findAllLoans() {
         List<Loan> loanList = loanRepository.findAll();
 
         List<LoanDto> dtoList = new ArrayList<>();
@@ -62,7 +62,7 @@ public class LoanService {
         loanRepository.save(loan);
     }
 
-    public void deleteLoan(Integer loanId) {
+    public void deleteLoanById(Integer loanId) {
         loanRepository.deleteById(loanId);
     }
 

@@ -8,7 +8,6 @@ import br.ufsm.poow2.biblioteca_rest.repository.AuthorGenderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +36,11 @@ public class AuthorGenreService {
         return dto;
     }
 
-    public List<AuthorGenreDto> listAuthorGenderDtos() {
+    public List<AuthorGenreDto> listAllAuthorGenderDtos() {
         List<AuthorGenre> authorGenders = authorGenderRepository.findAll();
         return authorGenders.stream()
                 .map(this::mapToAuthorGenderDto)
                 .collect(Collectors.toList());
-    }
-
-    public boolean isAuthorGenderIdValid(Integer id) {
-        return authorGenderRepository.existsById(id);
     }
 
 }

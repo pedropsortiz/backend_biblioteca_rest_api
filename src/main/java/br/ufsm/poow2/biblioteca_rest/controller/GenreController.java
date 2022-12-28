@@ -28,12 +28,12 @@ public class GenreController {
             return new ResponseEntity<>(new ApiResponse(false, "Falha ao criar novo gênero! Caracteres inválidos."), HttpStatus.BAD_REQUEST);
         }
         // Verifica se o gênero já existe
-        if (genreService.findGenderByName(genderName) != null) {
+        if (genreService.findGenreByName(genderName) != null) {
             return new ResponseEntity<>(new ApiResponse(false, "Falha ao criar novo gênero! Gênero já existente"), HttpStatus.BAD_REQUEST);
         }
 
         // Cria o gênero e retorna a resposta
-        return genreService.createGender(genre);
+        return genreService.addGenre(genre);
     }
 
     // Função privada para validar o nome do gênero
@@ -46,7 +46,7 @@ public class GenreController {
     @GetMapping("/listar")
     public ResponseEntity<List<Genre>> listarGenero(){
         try {
-            List<Genre> generos = genreService.listarGenero();
+            List<Genre> generos = genreService.findAllGenres();
             if (generos.isEmpty()) {
                 return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
             }
@@ -61,13 +61,13 @@ public class GenreController {
         if (generoId == null || genre == null) {
             return new ResponseEntity<>(new ApiResponse(false, "Falha ao editar gênero! Dados inválidos."), HttpStatus.BAD_REQUEST);
         }
-        return genreService.editarGenero(generoId, genre);
+        return genreService.updateGenre(generoId, genre);
     }
     @PostMapping("/deletar/{generoId}")
     public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("generoId") Integer generoId){
         if (generoId == null || generoId <= 0) {
             return new ResponseEntity<>(new ApiResponse(false, "O ID do gênero é inválido!"), HttpStatus.BAD_REQUEST);
         }
-        return genreService.deletarGenero(generoId);
+        return genreService.deleteGenreById(generoId);
     }
 }

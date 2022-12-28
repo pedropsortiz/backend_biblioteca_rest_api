@@ -17,17 +17,17 @@ public class AuthorController {
     AuthorService authorService;
 
     @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarAuthor(@RequestBody Author author){ return authorService.createAuthor(author); }
+    public ResponseEntity<ApiResponse> criarAuthor(@RequestBody Author author){ return authorService.addAuthor(author); }
 
     @GetMapping("/listar")
     public List<Author> listarAuthor(){
-        return authorService.listAuthors();
+        return authorService.listAllAuthors();
     }
 
     @PostMapping("/editar/{idAuthor}")
     public ResponseEntity<ApiResponse> editarAuthor(@PathVariable("idAuthor") Integer idAuthor, @RequestBody Author author){ return authorService.updateAuthor(idAuthor, author); }
 
     @PostMapping("/deletar/{idAuthor}")
-    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAuthor") Integer idAuthor){ return authorService.deleteAuthor(idAuthor); }
+    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAuthor") Integer idAuthor){ return authorService.deleteAuthorById(idAuthor); }
 
 }

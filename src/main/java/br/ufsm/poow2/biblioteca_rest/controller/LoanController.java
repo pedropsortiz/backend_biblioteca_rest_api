@@ -35,13 +35,13 @@ public class LoanController {
         if (!optionalBook.isPresent() || !usuarioOptional.isPresent()){
             return new ResponseEntity<>(new ApiResponse(false, "O empréstimo selecionado não existe!"), HttpStatus.BAD_REQUEST);
         }
-        loanService.createLoan(loanDto, optionalBook.get(), usuarioOptional.get());
+        loanService.addLoan(loanDto, optionalBook.get(), usuarioOptional.get());
         return new ResponseEntity<>(new ApiResponse(true, "Novo empréstimo criado com sucesso!"), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<LoanDto>> listarEmprestimos(){
-        List<LoanDto> allEmprestimos = loanService.getAllLoans();
+        List<LoanDto> allEmprestimos = loanService.findAllLoans();
         return new ResponseEntity<>(allEmprestimos, HttpStatus.OK);
     }
 
@@ -59,7 +59,7 @@ public class LoanController {
 
     @PostMapping("/deletar/{idEmprestimo}")
     public ResponseEntity<ApiResponse> deletarBook(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
-        loanService.deleteLoan(idEmprestimo);
+        loanService.deleteLoanById(idEmprestimo);
         return new ResponseEntity<>(new ApiResponse(true, "Empréstimo deletado com sucesso!"), HttpStatus.OK);
     }
 

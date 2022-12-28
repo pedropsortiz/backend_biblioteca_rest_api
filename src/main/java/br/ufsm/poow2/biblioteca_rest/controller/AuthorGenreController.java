@@ -40,7 +40,7 @@ public class AuthorGenreController {
     }
     @GetMapping("/")
     public ResponseEntity<List<AuthorGenreDto>> listarAuthorGenre(){
-        List<AuthorGenreDto> authorGenreDtoList = authorGenreService.listAuthorGenderDtos();
+        List<AuthorGenreDto> authorGenreDtoList = authorGenreService.listAllAuthorGenderDtos();
         return new ResponseEntity<>(authorGenreDtoList, HttpStatus.OK);
     }
 

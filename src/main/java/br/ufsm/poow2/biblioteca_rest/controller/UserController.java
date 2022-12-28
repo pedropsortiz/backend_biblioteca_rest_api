@@ -17,7 +17,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarUser(@RequestBody User user){ return userService.createUser(user); }
+    public ResponseEntity<ApiResponse> criarUser(@RequestBody User user){ return userService.addUser(user); }
 
     @GetMapping("/listar")
     public List<User> listarUser(){

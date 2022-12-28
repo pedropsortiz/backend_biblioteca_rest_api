@@ -32,16 +32,11 @@ public class BookGenreService {
         return dto;
     }
 
-    public List<BookGenreDto> listBookGenreDtos() {
+    public List<BookGenreDto> findAllBookGenres() {
         List<BookGenre> bookGenres = bookGenreRepository.findAll();
         return bookGenres.stream()
                 .map(this::mapToBookGenreDto)
                 .collect(Collectors.toList());
     }
-
-    public boolean isBookGenreExistingById(Integer id) {
-        return bookGenreRepository.existsById(id);
-    }
-
 
 }

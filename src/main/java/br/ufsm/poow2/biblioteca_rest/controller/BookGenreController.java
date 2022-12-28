@@ -41,7 +41,7 @@ public class BookGenreController {
 
     @GetMapping("/")
     public ResponseEntity<List<BookGenreDto>> listarBookGenre(){
-        List<BookGenreDto> bookGenreDtoList = bookGenreService.listBookGenreDtos();
+        List<BookGenreDto> bookGenreDtoList = bookGenreService.findAllBookGenres();
         return new ResponseEntity<>(bookGenreDtoList, HttpStatus.OK);
     }
 

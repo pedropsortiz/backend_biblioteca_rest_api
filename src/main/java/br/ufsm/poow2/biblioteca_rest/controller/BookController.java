@@ -29,13 +29,13 @@ public class BookController {
         if (!optionalAuthor.isPresent()){
             return new ResponseEntity<>(new ApiResponse(false, "O livro selecionado não existe!"), HttpStatus.BAD_REQUEST);
         }
-        bookService.createBook(bookDto, optionalAuthor.get());
+        bookService.addBook(bookDto, optionalAuthor.get());
         return new ResponseEntity<>(new ApiResponse(true, "Novo livro criado com sucesso!"), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<BookDto>> listarLivro(){
-        List<BookDto> allLivros = bookService.getAllBooks();
+        List<BookDto> allLivros = bookService.findAllBooks();
         return new ResponseEntity<>(allLivros, HttpStatus.OK);
     }
 
@@ -51,7 +51,7 @@ public class BookController {
 
     @PostMapping("/deletar/{idLivro}")
     public ResponseEntity<ApiResponse> deletarLivro(@PathVariable("idLivro") Integer idLivro) throws Exception {
-        bookService.deleteBook(idLivro);
+        bookService.deleteBookById(idLivro);
         return new ResponseEntity<>(new ApiResponse(true, "Livro deletado com sucesso!"), HttpStatus.OK);
     }
 
