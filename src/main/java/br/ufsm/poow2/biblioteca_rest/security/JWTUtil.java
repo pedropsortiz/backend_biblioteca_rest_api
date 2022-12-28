@@ -1,6 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.security;
 
-import br.ufsm.poow2.biblioteca_rest.model.Usuario;
+import br.ufsm.poow2.biblioteca_rest.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,13 +12,13 @@ import java.util.Map;
 
 public class JWTUtil {
 
-    public static final long TEMPO_VIDA = Duration.ofDays(3).toMillis();
+    public static final long TEMPO_VIDA = Duration.ofDays(1).toMillis();
 
-    public String geraToken(Usuario usuario){
+    public String geraToken(User user){
 
         final Map<String, Object> cliente = new HashMap<>();
-        cliente.put("sub", usuario.getEmailUsuario());
-        cliente.put("permissao", usuario.getPermissaoUsuario());
+        cliente.put("sub", user.getEmail());
+        cliente.put("permissao", user.getPermission());
 
         return Jwts.builder()
                 .setClaims(cliente)

@@ -1,28 +1,20 @@
 package br.ufsm.poow2.biblioteca_rest.common;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class ApiResponse {
 
-    private final boolean success;
-    private final String message;
-    // try again
+    private boolean success;
+    private String message;
 
     public ApiResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
     }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getTimestamp() {
-        return LocalDateTime.now().toString();
-    }
-
 }
