@@ -57,10 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Permite acesso a todas as requisições GET na raiz do site
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 // Permite acesso a todas as requisições POST no caminho "/login"
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll();
                 // Exige autoridade "adm" para as requisições POST nos caminhos "/genero" e "/genero/criar"
-                .antMatchers(HttpMethod.POST, "/genero").hasAuthority("adm")
-                .antMatchers(HttpMethod.POST, "/genero/criar").hasAuthority("adm");
+//                .antMatchers(HttpMethod.POST, "/genero").hasAuthority("adm")
+//                .antMatchers(HttpMethod.POST, "/genero/criar").hasAuthority("adm");
         // Adiciona o filtro de autenticação antes do filtro de autenticação de senha do usuário
         http.addFilterBefore(this.filtroAutenticacao(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.PrintStream;
+
 @RestController
 public class LoginController {
 
@@ -36,11 +38,11 @@ public class LoginController {
             if (authentication.isAuthenticated()){
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                User userResponse = userService.findUserByEmail(user.getEmail());
 
                 System.out.println("Gerando TOCKEN de autenticação");
-                String token = new JWTUtil().geraToken(userResponse);
+                String token = new JWTUtil().geraToken(user);
                 userService.updateJwtToken(user.getEmail(), token);
+                User userResponse = userService.findUserByEmail(user.getEmail());
 
                 return new ResponseEntity<>(userResponse, HttpStatus.OK);
             }
