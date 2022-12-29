@@ -143,4 +143,9 @@ public class AuthorService {
         }
         return response;
     }
+
+    public Optional<Author> getOneAuthor(Integer id){
+        return authorRepository.findById(id);
+    }
+
 }

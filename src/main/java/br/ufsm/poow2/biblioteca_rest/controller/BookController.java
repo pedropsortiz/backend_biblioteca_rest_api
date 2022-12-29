@@ -26,36 +26,31 @@ public class BookController {
         this.authorRepository = authorRepository;
     }
 
-    @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarLivro(@RequestBody BookDto bookDto){
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> addBook(@RequestBody BookDto bookDto){
         Optional<Author> optionalAuthor = authorRepository.findById(bookDto.getAuthorId());
-        if (!optionalAuthor.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false, "O livro selecionado não existe!"), HttpStatus.BAD_REQUEST);
-        }
-        bookService.addBook(bookDto, optionalAuthor.get());
-        return new ResponseEntity<>(new ApiResponse(true, "Novo livro criado com sucesso!"), HttpStatus.CREATED);
+        return bookService.addBook(bookDto, optionalAuthor.get());
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<BookDto>> listarLivro(){
+    public ResponseEntity<List<BookDto>> listBooks(){
         List<BookDto> allLivros = bookService.findAllBooks();
         return new ResponseEntity<>(allLivros, HttpStatus.OK);
     }
 
-    @PostMapping("/editar/{idLivro}")
-    public ResponseEntity<ApiResponse> editarLivro(@PathVariable("idLivro") Integer idLivro, @RequestBody BookDto bookDto) throws Exception {
-        Optional<Author> optionalAuthor = authorRepository.findById(bookDto.getAuthorId());
-        if (!optionalAuthor.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false, "O livro selecionado não existe!"), HttpStatus.BAD_REQUEST);
-        }
-        bookService.updateBook(bookDto, idLivro);
-        return new ResponseEntity<>(new ApiResponse(true, "Livro editado com sucesso!"), HttpStatus.CREATED);
+    @PostMapping("/listOne/{id}")
+    public ResponseEntity<ApiResponse> listOneBook(@PathVariable("id") Integer id){
+        return bookService.getBookById(id);
     }
 
-    @PostMapping("/deletar/{idLivro}")
-    public ResponseEntity<ApiResponse> deletarLivro(@PathVariable("idLivro") Integer idLivro) throws Exception {
-        bookService.deleteBookById(idLivro);
-        return new ResponseEntity<>(new ApiResponse(true, "Livro deletado com sucesso!"), HttpStatus.OK);
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<ApiResponse> editBook(@PathVariable("id") Integer id, @RequestBody BookDto bookDto) throws Exception {
+        return bookService.updateBook(bookDto, id);
+    }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteBook(@PathVariable("id") Integer id) {
+        return bookService.deleteBookById(id);
     }
 
 }

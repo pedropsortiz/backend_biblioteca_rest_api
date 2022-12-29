@@ -1,11 +1,25 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
 import br.ufsm.poow2.biblioteca_rest.DTO.BookDto;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+/**
+ * Uma classe que representa um livro.
+ *
+ * Regras:
+ * - O campo "id" deve ser único para cada livro e não pode ser alterado.
+ * - O campo "name" deve ser preenchido com o título do livro e não pode ser vazio ou nulo. Além disso, o tamanho mínimo é de 3 caracteres.
+ * - O campo "description" deve conter uma breve descrição do livro e pode ser nulo. Se preenchido, o tamanho mínimo é de 10 caracteres.
+ * - O campo "author" deve conter informações sobre o autor do livro e não pode ser nulo.
+ * - O campo "coverUrl" deve conter a URL da capa do livro e pode ser nulo.
+ * - O campo "totalQuantity" deve conter o número total de exemplares do livro disponíveis e deve ser maior ou igual a zero.
+ * - O campo "inUseQuantity" deve conter o número de exemplares do livro que estão atualmente em uso e deve ser maior ou igual a zero. Ele também deve ser menor ou igual a "totalQuantity".
+ */
 
 @Getter
 @Setter
@@ -24,6 +38,7 @@ public class Book {
     @NotBlank
     private String name;
 
+    @ApiModelProperty(example = "null")
     @Column(name = "description")
     private String description;
 
@@ -33,6 +48,7 @@ public class Book {
     @NotBlank
     private Author author;
 
+    @ApiModelProperty(example = "null")
     @Column(name = "cover_url")
     private String coverUrl;
 
@@ -46,11 +62,12 @@ public class Book {
     @NotBlank
     private Integer inUseQuantity;
 
-    public void update(BookDto newValues) {
+    public void update(BookDto newValues, Author author) {
         this.name = newValues.getName();
         this.description = newValues.getDescription();
         this.coverUrl = newValues.getCoverUrl();
         this.totalQuantity = newValues.getTotalQuantity();
         this.inUseQuantity = newValues.getInUseQuantity();
+        this.author = author;
     }
 }

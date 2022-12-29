@@ -21,7 +21,7 @@ public class AuthorController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> createAuthor(@RequestBody Author author){
+    public ResponseEntity<ApiResponse> addAuthor(@RequestBody Author author){
         return authorService.addAuthor(author);
     }
 
