@@ -4,6 +4,7 @@ import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,27 +16,41 @@ import java.util.Optional;
 @Service
 public class AuthorService {
 
+    private final AuthorRepository authorRepository;
+
     @Autowired
-    AuthorRepository authorRepository;
+    public AuthorService(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
+    }
 
     public ResponseEntity<ApiResponse> addAuthor(Author author) {
         ResponseEntity<ApiResponse> response;
 
-        // Verifica se a data de morte foi informada
-        if (author.getDeathDate() != null) {
-            // Verifica se a data de morte ocorre depois da data de nascimento
-            if (!isValidDeathDate(author.getDeathDate(), author.getBirthDate())) {
-                // Se a data de morte for anterior à data de nascimento, retorna uma resposta de erro
-                response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar o autor. A data de morte ocorre antes da data de nascimento."));
-                return response;
+        String regexName = "[a-zA-ZÇç\\u00C0-\\u017F\\s]+";
+
+        boolean isNameValid = author.getName().matches(regexName);
+        boolean isDeathDateValid = isValidDeathDate(author.getDeathDate(), author.getBirthDate());
+
+        if (!isNameValid)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar o autor. O nome do autor deve conter apenas letras, acentos ou o caractere especial ç."));
+        }
+        else if (!isDeathDateValid)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar o autor. A data de morte ocorre antes da data de nascimento."));
+        }
+        else
+        {
+            try {
+                authorRepository.save(author);
+                response = ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Novo autor criado com sucesso!"));
+            } catch (DataAccessException e){
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
-        // Salva o autor no banco de dados
-        authorRepository.save(author);
-        // Retorna uma resposta de sucesso
-        response = ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Novo autor criado com sucesso!"));
         return response;
     }
+
 
     public List<Author> listAllAuthors() {
         // Retorna todos os autores do repositório
@@ -43,55 +58,89 @@ public class AuthorService {
     }
 
     public ResponseEntity<ApiResponse> updateAuthor(Integer id, Author updatedAuthor) {
-        // Busca o autor no repositório pelo ID informado
         Author author = authorRepository.findById(id).orElse(null);
         ResponseEntity<ApiResponse> response;
 
+        String regexName = "[a-zA-ZÇç\\u00C0-\\u017F\\s]+";
+
+        boolean isNameValid = updatedAuthor.getName().matches(regexName);
+        boolean isDeathDateValid = isValidDeathDate(updatedAuthor.getDeathDate(), updatedAuthor.getBirthDate());
+        boolean doesAuthorExists = (author == null) ? false : true;
+
         // Verifica se o autor foi encontrado
-        if (author == null) {
+        if (!doesAuthorExists)
+        {
             // Retorna mensagem de erro caso o autor não exista
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O autor não existe ou não foi encontrado!"));
         }
-
-        // Verifica se a data de morte é válida
-        boolean isValidDeathDate = isValidDeathDate(updatedAuthor.getDeathDate(), updatedAuthor.getBirthDate());
-        if (!isValidDeathDate) {
-            // Retorna mensagem de erro caso a data de morte seja inválida
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar o autor. A data de morte ocorre depois da data de nascimento."));
-        } else {
-            // Atualiza os dados do autor
-            author.update(updatedAuthor);
-            // Salva as alterações no repositório
-            authorRepository.save(author);
-            // Retorna mensagem de sucesso
-            response = ResponseEntity.ok(new ApiResponse(true, "O autor foi editado com sucesso!"));
+        else if (!isNameValid)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar o autor. O nome do autor deve conter apenas letras, acentos ou o caractere especial ç."));
         }
-
+        else if (!isDeathDateValid)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar o autor. A data de morte ocorre depois da data de nascimento."));
+        }
+        else
+        {
+            try {
+                author.update(updatedAuthor);
+                authorRepository.save(author);
+                response = ResponseEntity.ok(new ApiResponse(true, "O autor foi editado com sucesso!"));
+            } catch (DataAccessException e){
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
+            }
+        }
         return response;
     }
 
     public ResponseEntity<ApiResponse> deleteAuthorById(Integer id) {
-        // Busca o autor no repositório pelo ID informado
         Optional<Author> author = authorRepository.findById(id);
         ResponseEntity<ApiResponse> response;
 
-        // Verifica se o autor foi encontrado
-        if (!author.isPresent()) {
-            // Retorna mensagem de erro caso o autor não exista
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O autor não existe ou não foi encontrado!"));
-            return response;
-        }
+        boolean doesAuthorExists = author.isPresent();
 
-        // Exclui o autor do repositório
-        authorRepository.deleteById(id);
-        // Retorna mensagem de sucesso
-        response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O autor foi excluido com sucesso!"));
+        // Verifica se o autor foi encontrado
+        if (!doesAuthorExists)
+        {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O autor não existe ou não foi encontrado!"));
+        }
+        else
+        {
+            // Exclui o autor do repositório
+            try {
+                authorRepository.deleteById(id);
+                response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O autor foi excluido com sucesso!"));
+            } catch (DataAccessException e){
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
+            }
+        }
         return response;
     }
 
     private boolean isValidDeathDate(Date dateOfDeath, Date dateOfBirth) {
-        // Verifica se a data de morte é posterior à data de nascimento
-        return dateOfDeath.after(dateOfBirth);
+        // Verifica se a data de morte é nula ou se a data de morte ocorre depois da data de nascimento
+        return dateOfDeath == null || dateOfDeath.after(dateOfBirth);
     }
 
+    public ResponseEntity<ApiResponse> getAuthorById(Integer id) {
+        Author author = authorRepository.findById(id).orElse(null);
+        ResponseEntity<ApiResponse> response;
+
+        boolean doesAuthorExists = (author == null) ? false : true;
+
+        if (!doesAuthorExists)
+        {
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "Autor não encontrado"));
+        }
+        else
+        {
+            try {
+                response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, author.toString()));
+            } catch (DataAccessException e) {
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Erro de acesso a data"));
+            }
+        }
+        return response;
+    }
 }

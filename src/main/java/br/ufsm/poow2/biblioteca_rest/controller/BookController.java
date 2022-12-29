@@ -14,14 +14,17 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/livro")
+@RequestMapping("/book")
 public class BookController {
 
-    @Autowired
-    BookService bookService;
+    private final BookService bookService;
+    private final AuthorRepository authorRepository;
 
     @Autowired
-    AuthorRepository authorRepository;
+    public BookController(BookService bookService, AuthorRepository authorRepository) {
+        this.bookService = bookService;
+        this.authorRepository = authorRepository;
+    }
 
     @PostMapping("/criar")
     public ResponseEntity<ApiResponse> criarLivro(@RequestBody BookDto bookDto){

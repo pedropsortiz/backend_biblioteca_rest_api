@@ -13,21 +13,36 @@ import java.util.List;
 @RequestMapping("/author")
 public class AuthorController {
 
+    private final AuthorService authorService;
+
     @Autowired
-    AuthorService authorService;
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
+    }
 
-    @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarAuthor(@RequestBody Author author){ return authorService.addAuthor(author); }
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> createAuthor(@RequestBody Author author){
+        return authorService.addAuthor(author);
+    }
 
-    @GetMapping("/listar")
-    public List<Author> listarAuthor(){
+    @GetMapping("/list")
+    public List<Author> listAuthors(){
         return authorService.listAllAuthors();
     }
 
-    @PostMapping("/editar/{idAuthor}")
-    public ResponseEntity<ApiResponse> editarAuthor(@PathVariable("idAuthor") Integer idAuthor, @RequestBody Author author){ return authorService.updateAuthor(idAuthor, author); }
+    @PostMapping("/listOne/{id}")
+    public ResponseEntity<ApiResponse> listOneAuthor(@PathVariable("id") Integer id){
+        return authorService.getAuthorById(id);
+    }
 
-    @PostMapping("/deletar/{idAuthor}")
-    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("idAuthor") Integer idAuthor){ return authorService.deleteAuthorById(idAuthor); }
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<ApiResponse> editAuthor(@PathVariable("id") Integer id, @RequestBody Author author){
+        return authorService.updateAuthor(id, author);
+    }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteAuthor(@PathVariable("id") Integer id){
+        return authorService.deleteAuthorById(id);
+    }
 
 }

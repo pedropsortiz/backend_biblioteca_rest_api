@@ -1,12 +1,19 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.Date;
+
+/**
+ * Regra 1: O ID do autor é gerado automaticamente pelo banco de dados e não pode ser alterado pelo usuário.
+ * Regra 2: O nome do autor deve conter apenas letras, acentos e o caractere especial ç.
+ * Regra 3: A data de nascimento do autor deve ser anterior à data atual.
+ * Regra 4: A data de morte do autor pode ser nula, mas se for especificada, deve ser posterior à data de nascimento.
+ * Regra 5: A descrição do autor pode conter qualquer tipo de caractere, incluindo caracteres especiais e números.
+ */
 
 @Getter
 @Setter
@@ -31,9 +38,11 @@ public class Author {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date deathDate;
 
+    @ApiModelProperty(example = "null")
     @Column(name = "description")
     private String description;
 
+    @ApiModelProperty(example = "null")
     @Column(name = "photo_url")
     private String photoUrl;
 
