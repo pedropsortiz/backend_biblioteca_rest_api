@@ -8,11 +8,17 @@ import javax.persistence.*;
 import java.sql.Date;
 
 /**
- * Regra 1: O ID do autor é gerado automaticamente pelo banco de dados e não pode ser alterado pelo usuário.
- * Regra 2: O nome do autor deve conter apenas letras, acentos e o caractere especial ç.
- * Regra 3: A data de nascimento do autor deve ser anterior à data atual.
- * Regra 4: A data de morte do autor pode ser nula, mas se for especificada, deve ser posterior à data de nascimento.
- * Regra 5: A descrição do autor pode conter qualquer tipo de caractere, incluindo caracteres especiais e números.
+
+ * Uma classe que representa um livro.
+ *
+ * Regras:
+ * O campo 'id' deve ser único para cada livro e não pode ser alterado.
+ * O campo 'name' deve ser preenchido com o título do livro e não pode ser vazio ou nulo. Além disso, o tamanho mínimo é de 3 caracteres.
+ * O campo 'description' deve conter uma breve descrição do livro e pode ser nulo. Se preenchido, o tamanho mínimo é de 10 caracteres.
+ * O campo 'author' deve conter informações sobre o autor do livro e não pode ser nulo.
+ * O campo 'coverUrl' deve conter a URL da capa do livro e pode ser nulo.
+ * O campo 'totalQuantity' deve conter o número total de exemplares do livro disponíveis e deve ser maior ou igual a zero.
+ * O campo 'inUseQuantity' deve conter o número de exemplares do livro que estão atualmente em uso e deve ser maior ou igual a zero. Ele também deve ser menor ou igual a 'totalQuantity'.
  */
 
 @Getter
