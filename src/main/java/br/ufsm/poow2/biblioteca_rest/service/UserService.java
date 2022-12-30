@@ -12,18 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserException userException;
 
     @Autowired
-    UserException userException;
+    public UserService(UserRepository userRepository, UserException userException) {
+        this.userRepository = userRepository;
+        this.userException = userException;
+    }
 
     public ResponseEntity<ApiResponse> addUser(User user) {
         ResponseEntity<ApiResponse> response;
