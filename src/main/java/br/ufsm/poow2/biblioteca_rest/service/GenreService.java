@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class GenreService {
@@ -17,13 +18,32 @@ public class GenreService {
     @Autowired
     GenreRepository genreRepository;
 
+    private static final Pattern GENRE_NAME_PATTERN = Pattern.compile("^[a-zA-ZÀ-ÿ\\-\\s]{3,100}$");
+
     public ResponseEntity<ApiResponse> addGenre(Genre genre){
-        try {
-            genreRepository.save(genre);
-            return new ResponseEntity<>(new ApiResponse(true, "Nova categoria criada com sucesso!"), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, "Falha ao criar novo gênero!"), HttpStatus.INTERNAL_SERVER_ERROR);
+        ResponseEntity<ApiResponse> response;
+
+        boolean isValidGenreName = isValidGenderName(genre.getName());
+        boolean doesGenreAlredyExists = genreRepository.findGenreByName(genre.getName()) != null;
+
+        if (!doesGenreAlredyExists)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar novo gênero! Caracteres inválidos."));
         }
+        else if (!isValidGenreName)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar novo gênero! Gênero já existente"));
+        }
+        else
+        {
+            try {
+                genreRepository.save(genre);
+                response = ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Novo gênero criado com sucesso!"));
+            } catch (Exception e) {
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
+            }
+        }
+        return response;
     }
 
     public List<Genre> findAllGenres(){
@@ -31,18 +51,37 @@ public class GenreService {
     }
 
     public ResponseEntity<ApiResponse> updateGenre(Integer id, Genre editarGenero) {
-        Optional<Genre> optionalGenero = genreRepository.findById(id);
-        if (!optionalGenero.isPresent()) {
-            return new ResponseEntity<>(new ApiResponse(false, "O gênero não foi encontrado ou não existe!"), HttpStatus.NOT_FOUND);
+        Optional<Genre> genreOptional = genreRepository.findById(id);
+        ResponseEntity<ApiResponse> response;
+
+        boolean isValidGenreName = isValidGenderName(editarGenero.getName());
+        boolean isGenreValid = genreOptional != null;
+        boolean doesGenreAlredyExists = genreRepository.findGenreByName(editarGenero.getName()) != null;
+
+        if (!isGenreValid)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! Gênero inválido"));
         }
-        try {
-            Genre genre = optionalGenero.get();
-            genre.update(editarGenero);
-            genreRepository.save(genre);
-            return new ResponseEntity<>(new ApiResponse(true, "O gênero foi editado com sucesso!"), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, "Falha ao editar gênero!"), HttpStatus.INTERNAL_SERVER_ERROR);
+        else if (!doesGenreAlredyExists)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! Caracteres inválidos."));
         }
+        else if (!isValidGenreName)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! o gênero digitado já existe"));
+        }
+        else
+        {
+            try {
+                Genre genre = genreOptional.get();
+                genre.update(editarGenero);
+                genreRepository.save(genre);
+                response = ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "O gênero foi editado com sucesso!"));
+            } catch (Exception e) {
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
+            }
+        }
+        return response;
     }
 
     public ResponseEntity<ApiResponse> deleteGenreById(Integer id) {
@@ -59,8 +98,10 @@ public class GenreService {
         }
     }
 
-    public Genre findGenreByName(String nomeGenero){
-        return genreRepository.findGenreByName(nomeGenero);
+    private boolean isValidGenderName(String genderName) {
+        // Verifica se o nome do gênero corresponde à expressão regular
+        return GENRE_NAME_PATTERN.matcher(genderName).matches();
     }
+
 
 }
