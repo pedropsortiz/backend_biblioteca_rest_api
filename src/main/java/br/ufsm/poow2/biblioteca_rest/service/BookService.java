@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,22 +20,35 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    @Autowired
-    BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final AuthorService authorService;
 
     @Autowired
-    AuthorService authorService;
+    public BookService(BookRepository bookRepository, AuthorService authorService) {
+        this.bookRepository = bookRepository;
+        this.authorService = authorService;
+    }
 
+    /*
+    CRUD
+     */
+
+    //Adicionar Livro no banco de dados
     public ResponseEntity<ApiResponse> addBook(BookDto dto, Author author) {
         ResponseEntity<ApiResponse> response;
 
-        boolean isNameValid = isNameValid(dto.getName());
+        boolean isNameValid = isNameValid(dto.getTitle());
         boolean isDescriptionValid = isDescriptionValid(dto.getDescription());
         boolean isAuthorValid = authorService.getAuthorById(dto.getAuthorId()) != null;
         boolean isTotalQuantityValid = isTotalQuantityValid(dto.getTotalQuantity());
         boolean isInUseQuantityValid = isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity());
+        boolean doesBookAlredyExists = doesBookAlredyExists(dto, author);
 
-        if (!isNameValid)
+        if (!doesBookAlredyExists)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação"));
+        }
+        else if (!isNameValid)
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O título do livro é inválido ou está vazio. O tamanho mínimo é de 3 caracteres."));
         }
@@ -60,12 +72,7 @@ public class BookService {
         {
             try {
                 Book book = new Book();
-                book.setName(dto.getName());
-                book.setDescription(dto.getDescription());
-                book.setTotalQuantity(dto.getTotalQuantity());
-                book.setCoverUrl(dto.getCoverUrl());
-                book.setInUseQuantity(dto.getInUseQuantity());
-                book.setAuthor(author);
+                book.update(dto, author);
                 bookRepository.save(book);
                 response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O livro foi criado com sucesso!"));
             } catch (DataAccessException e){
@@ -75,6 +82,7 @@ public class BookService {
         return response;
     }
 
+    //Mapear os Livros no banco de dados
     public BookDto mapToBookDto(Book book) {
         BookDto dto = new BookDto();
         BeanUtils.copyProperties(book, dto);
@@ -82,6 +90,7 @@ public class BookService {
         return dto;
     }
 
+    //Exibir os livros pelo banco
     public List<BookDto> findAllBooks() {
         List<Book> books = bookRepository.findAll();
 
@@ -90,6 +99,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    //Atualizar Livro
     public ResponseEntity<ApiResponse> updateBook(BookDto dto, Integer id){
         ResponseEntity<ApiResponse> response;
         Book book = bookRepository.findById(id).orElse(null);
@@ -97,12 +107,17 @@ public class BookService {
 
         boolean isBookValid = book != null;
         boolean isAuthorValid = author.isPresent();
-        boolean isNameValid = isNameValid(dto.getName());
+        boolean isNameValid = isNameValid(dto.getTitle());
         boolean isDescriptionValid = isDescriptionValid(dto.getDescription());
         boolean isTotalQuantityValid = isTotalQuantityValid(dto.getTotalQuantity());
         boolean isInUseQuantityValid = isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity());
+        boolean doesBookAlredyExists = doesBookAlredyExists(dto, author.get());
 
-        if (!isBookValid)
+        if (!doesBookAlredyExists)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação"));
+        }
+        else if (!isBookValid)
         {
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O livro selecionado não existe ou não foi encontrado"));
         }
@@ -139,11 +154,12 @@ public class BookService {
         return response;
     }
 
+    //Deletar livro
     public ResponseEntity<ApiResponse> deleteBookById(Integer id) {
         ResponseEntity<ApiResponse> response;
         Book bookOptional = bookRepository.findById(id).orElse(null);
 
-        boolean doesBookExists = (bookOptional==null) ? false: true;
+        boolean doesBookExists = bookOptional != null;
 
         if (!doesBookExists)
         {
@@ -161,22 +177,7 @@ public class BookService {
         return response;
     }
 
-    public boolean isNameValid(String name) {
-        return name != null && !name.trim().isEmpty() && name.trim().length() >= 3;
-    }
-
-    public boolean isDescriptionValid(String description) {
-        return description == null || !description.trim().isEmpty() && description.trim().length() >= 10;
-    }
-
-    public boolean isTotalQuantityValid(int totalQuantity) {
-        return totalQuantity >= 0;
-    }
-
-    public boolean isInUseQuantityValid(int inUseQuantity, int totalQuantity) {
-        return inUseQuantity >= 0 && inUseQuantity <= totalQuantity;
-    }
-
+    //Exibir um livro pelo ID
     public ResponseEntity<ApiResponse> getBookById(Integer id)  {
         Book book = bookRepository.findById(id).orElse(null);
         ResponseEntity<ApiResponse> response;
@@ -199,4 +200,29 @@ public class BookService {
         }
         return response;
     }
+
+    /*
+    Testes de validação de campos
+     */
+
+    public boolean isNameValid(String name) {
+        return name != null && !name.trim().isEmpty() && name.trim().length() >= 3;
+    }
+
+    public boolean isDescriptionValid(String description) {
+        return description == null || !description.trim().isEmpty() && description.trim().length() >= 10;
+    }
+
+    public boolean isTotalQuantityValid(int totalQuantity) {
+        return totalQuantity >= 0;
+    }
+
+    public boolean isInUseQuantityValid(int inUseQuantity, int totalQuantity) {
+        return inUseQuantity >= 0 && inUseQuantity <= totalQuantity;
+    }
+
+    public boolean doesBookAlredyExists(BookDto bookDto, Author author){
+        return bookRepository.findBookByTitleAndAuthorAndEditionAndPublicationDate(bookDto.getTitle(), author, bookDto.getEdition(), bookDto.getPublicationDate()) != null;
+    }
+
 }

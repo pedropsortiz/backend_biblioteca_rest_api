@@ -1,12 +1,14 @@
 package br.ufsm.poow2.biblioteca_rest.model;
 
 import br.ufsm.poow2.biblioteca_rest.DTO.BookDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Uma classe que representa um livro.
@@ -33,10 +35,10 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "title")
     @NotNull
     @NotBlank
-    private String name;
+    private String title;
 
     @ApiModelProperty(example = "null")
     @Column(name = "description")
@@ -62,12 +64,25 @@ public class Book {
     @NotBlank
     private Integer inUseQuantity;
 
+    @Column(name = "edition")
+    @NotNull
+    @NotBlank
+    private int edition;
+
+    @Column(name = "publication_date")
+    @NotNull
+    @NotBlank
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date publicationDate;
+
     public void update(BookDto newValues, Author author) {
-        this.name = newValues.getName();
+        this.title = newValues.getTitle();
         this.description = newValues.getDescription();
         this.coverUrl = newValues.getCoverUrl();
         this.totalQuantity = newValues.getTotalQuantity();
         this.inUseQuantity = newValues.getInUseQuantity();
         this.author = author;
+        this.edition = newValues.getEdition();
+        this.publicationDate = newValues.getPublicationDate();
     }
 }

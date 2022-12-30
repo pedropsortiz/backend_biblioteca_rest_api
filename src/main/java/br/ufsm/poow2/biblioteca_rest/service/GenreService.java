@@ -55,10 +55,10 @@ public class GenreService {
         ResponseEntity<ApiResponse> response;
 
         boolean isValidGenreName = isValidGenderName(editarGenero.getName());
-        boolean isGenreValid = genreOptional != null;
+        boolean doesGenreExists = genreOptional != null;
         boolean doesGenreAlredyExists = genreRepository.findGenreByName(editarGenero.getName()) != null;
 
-        if (!isGenreValid)
+        if (!doesGenreExists)
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! Gênero inválido"));
         }
@@ -86,16 +86,25 @@ public class GenreService {
 
     public ResponseEntity<ApiResponse> deleteGenreById(Integer id) {
         Optional<Genre> genre = genreRepository.findById(id);
-        if (!genre.isPresent()) {
-            return new ResponseEntity<>(new ApiResponse(false, "O gênero não existe ou não foi encontrado!"), HttpStatus.BAD_REQUEST);
+        ResponseEntity<ApiResponse> response;
+
+        boolean doesGenreExists = genre.isPresent();
+
+        if (!doesGenreExists)
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao deletar gênero! Gênero inválido"));
+        }
+        else
+        {
+            try {
+                genreRepository.deleteById(id);
+                response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(false, "Gênero deletado com sucesso."));
+            } catch (Exception e) {
+                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
+            }
         }
 
-        try {
-            genreRepository.deleteById(id);
-            return new ResponseEntity<>(new ApiResponse(true, "O gênero foi deletado com sucesso!"), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ApiResponse(false, "Erro ao excluir gênero!"), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return response;
     }
 
     private boolean isValidGenderName(String genderName) {
