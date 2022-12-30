@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,18 +22,10 @@ public class GenreController {
         return genreService.addGenre(genre);
     }
 
-
     @GetMapping("/list")
-    public ResponseEntity<List<Genre>> listGenres(){
-        try {
-            List<Genre> generos = genreService.findAllGenres();
-            if (generos.isEmpty()) {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(generos, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<Genre>> listBooks(){
+        List<Genre> allGenres = genreService.findAllGenres();
+        return new ResponseEntity<>(allGenres, HttpStatus.OK);
     }
 
     @PostMapping("/edit/{id}")
@@ -42,11 +33,14 @@ public class GenreController {
         return genreService.updateGenre(id, genre);
     }
 
+    @PostMapping("/listOne/{id}")
+    public ResponseEntity<Genre> editarGenero(@PathVariable("id") Integer id){
+        Genre genre = genreService.findOneGenre(id);
+        return new ResponseEntity<>(genre, HttpStatus.OK);
+    }
+
     @PostMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("id") Integer id){
-        if (id == null || id <= 0) {
-            return new ResponseEntity<>(new ApiResponse(false, "O ID do gênero é inválido!"), HttpStatus.BAD_REQUEST);
-        }
         return genreService.deleteGenreById(id);
     }
 }

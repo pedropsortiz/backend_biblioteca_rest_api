@@ -24,9 +24,9 @@ public class GenreService {
         ResponseEntity<ApiResponse> response;
 
         boolean isValidGenreName = isValidGenderName(genre.getName());
-        boolean doesGenreAlredyExists = genreRepository.findGenreByName(genre.getName()) != null;
+        boolean doesGenreExists = doesGenreExists(genre);
 
-        if (!doesGenreAlredyExists)
+        if (!doesGenreExists)
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao criar novo gênero! Caracteres inválidos."));
         }
@@ -50,19 +50,23 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
+    public Genre findOneGenre(int id){
+        return genreRepository.findById(id).get();
+    }
+
     public ResponseEntity<ApiResponse> updateGenre(Integer id, Genre editarGenero) {
         Optional<Genre> genreOptional = genreRepository.findById(id);
         ResponseEntity<ApiResponse> response;
 
         boolean isValidGenreName = isValidGenderName(editarGenero.getName());
-        boolean doesGenreExists = genreOptional != null;
-        boolean doesGenreAlredyExists = genreRepository.findGenreByName(editarGenero.getName()) != null;
+        boolean doesGenreExists = doesGenreExists(genreOptional.get());
+        boolean doesNewGenreExists = doesGenreExists(editarGenero);
 
         if (!doesGenreExists)
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! Gênero inválido"));
         }
-        else if (!doesGenreAlredyExists)
+        else if (!doesNewGenreExists)
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao editar gênero! Caracteres inválidos."));
         }
@@ -88,7 +92,7 @@ public class GenreService {
         Optional<Genre> genre = genreRepository.findById(id);
         ResponseEntity<ApiResponse> response;
 
-        boolean doesGenreExists = genre.isPresent();
+        boolean doesGenreExists = doesGenreExists(genre.get());
 
         if (!doesGenreExists)
         {
@@ -110,6 +114,10 @@ public class GenreService {
     private boolean isValidGenderName(String genderName) {
         // Verifica se o nome do gênero corresponde à expressão regular
         return GENRE_NAME_PATTERN.matcher(genderName).matches();
+    }
+
+    private boolean doesGenreExists(Genre genre){
+        return genreRepository.findGenreByName(genre.getName()) != null;
     }
 
 
