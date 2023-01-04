@@ -23,24 +23,24 @@ public class GenreController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Genre>> listBooks(){
+    public ResponseEntity<List<Genre>> listGenres(){
         List<Genre> allGenres = genreService.findAllGenres();
         return new ResponseEntity<>(allGenres, HttpStatus.OK);
     }
 
     @PostMapping("/edit/{id}")
-    public ResponseEntity<ApiResponse> editarGenero(@PathVariable("id") Integer id, @RequestBody Genre genre){
+    public ResponseEntity<ApiResponse> updateGenre(@PathVariable("id") Integer id, @RequestBody Genre genre){
         return genreService.updateGenre(id, genre);
     }
 
     @PostMapping("/listOne/{id}")
-    public ResponseEntity<Genre> editarGenero(@PathVariable("id") Integer id){
+    public ResponseEntity<Genre> listOneGenre(@PathVariable("id") Integer id){
         Genre genre = genreService.findOneGenre(id);
         return new ResponseEntity<>(genre, HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse> deletarGenero(@PathVariable("id") Integer id){
+    public ResponseEntity<ApiResponse> delteGenre(@PathVariable("id") Integer id){
         return genreService.deleteGenreById(id);
     }
 }

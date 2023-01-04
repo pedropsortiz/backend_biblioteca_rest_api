@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,4 +44,5 @@ public class User {
         this.password = new BCryptPasswordEncoder().encode(newValues.password);
         this.permission = newValues.permission;
     }
+
 }

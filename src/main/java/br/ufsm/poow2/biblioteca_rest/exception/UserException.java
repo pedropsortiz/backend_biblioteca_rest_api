@@ -78,7 +78,7 @@ public class UserException {
     }
 
     @ExceptionHandler(Exception.class)
-    public List<String> handleUpdateTokenErros(String email, String jwtToken) {
+    public List<String> handleUpdateTokenErrors(String email, String jwtToken) {
         List<String> errors = new ArrayList<>();
 
         if (email == null || email.trim().isEmpty()) {

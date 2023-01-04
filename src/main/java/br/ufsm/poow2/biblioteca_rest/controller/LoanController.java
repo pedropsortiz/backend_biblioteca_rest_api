@@ -29,36 +29,30 @@ public class LoanController {
     UserRepository userRepository;
 
     @PostMapping("/criar")
-    public ResponseEntity<ApiResponse> criarEmprestimo(@RequestBody LoanDto loanDto){
+    public ResponseEntity<ApiResponse> addLoan(@RequestBody LoanDto loanDto){
         Optional<Book> optionalBook = bookRepository.findById(loanDto.getBookId());
         Optional<User> usuarioOptional = userRepository.findById(loanDto.getUserId());
-        if (!optionalBook.isPresent() || !usuarioOptional.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false, "O empréstimo selecionado não existe!"), HttpStatus.BAD_REQUEST);
-        }
-        loanService.addLoan(loanDto, optionalBook.get(), usuarioOptional.get());
-        return new ResponseEntity<>(new ApiResponse(true, "Novo empréstimo criado com sucesso!"), HttpStatus.CREATED);
+        return loanService.addLoan(loanDto, optionalBook.get(), usuarioOptional.get());
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<LoanDto>> listarEmprestimos(){
+    public ResponseEntity<List<LoanDto>> listLoans(){
         List<LoanDto> allEmprestimos = loanService.findAllLoans();
         return new ResponseEntity<>(allEmprestimos, HttpStatus.OK);
     }
 
-    @PostMapping("/editar/{idEmprestimo}")
-    public ResponseEntity<ApiResponse> editarEmprestimo(@PathVariable("idEmprestimo") Integer idEmprestimo, @RequestBody LoanDto loanDto) throws Exception {
-        Optional<Book> optionalBook = bookRepository.findById(loanDto.getBookId());
-        Optional<User> usuarioOptional = userRepository.findById(loanDto.getUserId());
+    @PostMapping("/extender/{idEmprestimo}")
+    public ResponseEntity<ApiResponse> extendLoan(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
+        return loanService.extendLoan(idEmprestimo);
+    }
 
-        if (!optionalBook.isPresent() || !usuarioOptional.isPresent()){
-            return new ResponseEntity<>(new ApiResponse(false, "O empréstimo selecionado não existe!"), HttpStatus.BAD_REQUEST);
-        }
-        loanService.updateLoan(loanDto, idEmprestimo);
-        return new ResponseEntity<>(new ApiResponse(true, "Empréstimo editado com sucesso!"), HttpStatus.CREATED);
+    @PostMapping("/return")
+    public ResponseEntity<ApiResponse> returnBookLoan(@RequestBody LoanDto loanDto) throws Exception {
+        return loanService.returnBook(loanDto);
     }
 
     @PostMapping("/deletar/{idEmprestimo}")
-    public ResponseEntity<ApiResponse> deletarBook(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
+    public ResponseEntity<ApiResponse> deleteLoan(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
         loanService.deleteLoanById(idEmprestimo);
         return new ResponseEntity<>(new ApiResponse(true, "Empréstimo deletado com sucesso!"), HttpStatus.OK);
     }

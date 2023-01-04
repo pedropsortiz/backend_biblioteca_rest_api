@@ -53,7 +53,7 @@ public class UserService {
     }
 
     public void updateJwtToken(String email, String jwtToken) {
-        List<String> handleErrors = userException.handleUpdateTokenErros(email, jwtToken);
+        List<String> handleErrors = userException.handleUpdateTokenErrors(email, jwtToken);
         if (handleErrors.isEmpty()) {
             User user = userRepository.findUserByEmail(email);
             user.setToken(jwtToken);
