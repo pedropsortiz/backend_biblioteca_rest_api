@@ -18,7 +18,6 @@ public class UserException {
     private static final String NAME_REGEX = "^[A-Za-z\\u00C0-\\u017FÇç]+$";
     private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$";
 
-    @ExceptionHandler(Exception.class)
     public List<String> handleAddUserErrors(User user) {
         List<String> errors = new ArrayList<>();
 
@@ -30,7 +29,7 @@ public class UserException {
             errors.add("Email já em uso");
         }
 
-        if (!isPermissionValid(user.getPermission())) {
+        if (isPermissionValid(user.getPermission())) {
             errors.add("Papéis de usuário não reconhecidos.");
         }
 
@@ -45,7 +44,6 @@ public class UserException {
         return errors;
     }
 
-    @ExceptionHandler(Exception.class)
     public List<String> handleUpdateUserErrors(Integer id, User user) {
         List<String> errors = new ArrayList<>();
         User userRepo = userRepository.findById(id).orElse(null);
@@ -63,7 +61,6 @@ public class UserException {
         return errors;
     }
 
-    @ExceptionHandler(Exception.class)
     public List<String> handleDeleteUserErrors(Integer id) {
         List<String> errors = new ArrayList<>();
 
@@ -77,7 +74,6 @@ public class UserException {
         return errors;
     }
 
-    @ExceptionHandler(Exception.class)
     public List<String> handleUpdateTokenErrors(String email, String jwtToken) {
         List<String> errors = new ArrayList<>();
 

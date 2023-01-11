@@ -17,7 +17,6 @@ public class LoanException {
     @Autowired
     LoanRepository loanRepository;
 
-    @ExceptionHandler(Exception.class)
     public List<String> handleAddLoanErrors(Loan loan, Book book, User user) {
         List<String> errors = new ArrayList<>();
 
