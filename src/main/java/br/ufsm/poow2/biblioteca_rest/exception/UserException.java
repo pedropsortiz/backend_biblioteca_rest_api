@@ -1,5 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.exception;
 
+import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import br.ufsm.poow2.biblioteca_rest.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -9,56 +10,56 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class UserException {
 
     @Autowired
     UserRepository userRepository;
-    private static final String NAME_REGEX = "^[A-Za-z\\u00C0-\\u017FÇç]+$";
+    private static final String NAME_REGEX = "^[A-Za-z\u00C0-\u017FÇç\s][A-Za-z\u00C0-\u017FÇç\s]([A-Za-z\u00C0-\u017FÇç\s])$";
     private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$";
 
-    public List<String> handleAddUserErrors(User user) {
-        List<String> errors = new ArrayList<>();
+        public Map<String, String> handleAddUserErrors(User user) {
+            ApiResponse apiResponse = new ApiResponse(false, "Falha ao criar novo usuário.");
 
         if (!isEmailValid(user.getEmail())) {
-            errors.add("Email inválido. O email deve conter um nome de usuário seguido de um sinal '@' e um domínio, por exemplo, 'usuario@dominio.com'");
-        }
+            apiResponse.addError("email", "Email inválido. O email deve conter um nome de usuário seguido de um sinal '@' e um domínio, por exemplo, 'usuario@dominio.com'");        }
 
         if (doesUserExistByEmail(user.getEmail())) {
-            errors.add("Email já em uso");
+            apiResponse.addError("email", "Email já em uso");
         }
 
         if (isPermissionValid(user.getPermission())) {
-            errors.add("Papéis de usuário não reconhecidos.");
+            apiResponse.addError("permission",  "Papéis de usuário não reconhecidos.");
         }
 
         if (!isNameValid((user.getName()))) {
-            errors.add("Nome de usuário inválido. O nome de usuário pode conter apenas letras acentos e o caractere 'ç'");
+            apiResponse.addError("name", "Nome de usuário inválido. O nome de usuário deve ser maior que uma palavra e pode conter apenas letras acentos e o caractere 'ç'");
         }
 
         if (!isPasswordValid(user.getPassword())) {
-            errors.add("Senha inválida. A senha deve ter pelo menos 8 caracteres e deve conter pelo menos uma letra maiúscula, um número e um caractere especial");
+            apiResponse.addError("password", "Senha inválida. A senha deve ter pelo menos 8 caracteres e deve conter pelo menos uma letra maiúscula, um número e um caractere especial");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleUpdateUserErrors(Integer id, User user) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleUpdateUserErrors(Integer id, User user) {
+        ApiResponse apiResponse = new ApiResponse(false, "Falha ao criar novo usuário.");
         User userRepo = userRepository.findById(id).orElse(null);
 
         if (userRepo.equals(null)){
-            errors.add("Usuário não encontrado ou não existe!");
+            apiResponse.addError("name", "Usuário não encontrado ou não existe!");
         }else{
             if (user.getPassword().equals(userRepo.getPassword())){
-                errors = handleAddUserErrors(user);
+                apiResponse.setErrors(handleAddUserErrors(user));
             }else {
-                errors.add("Erro ao atualizar perfil. Senha incorreta");
+                apiResponse.addError("password", "Erro ao atualizar perfil. Senha incorreta");
             }
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
     public List<String> handleDeleteUserErrors(Integer id) {

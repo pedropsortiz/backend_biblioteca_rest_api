@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -28,29 +29,27 @@ public class UserService {
     }
 
     public ResponseEntity<ApiResponse> addUser(User user) {
-        ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = userException.handleAddUserErrors(user);
+        Map<String, String> handleErrors = userException.handleAddUserErrors(user);
 
         if (handleErrors.isEmpty()){
             try {
                 user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
                 user.setToken(new JWTUtil().geraToken(user));
-                user.setPermission(user.getPermission() == null || user.getPermission().isEmpty() ? "USR" : "ADM");                userRepository.save(user);
-                response = ResponseEntity.status(HttpStatus.CREATED).body(
+                user.setPermission(user.getPermission() == null || user.getPermission().isEmpty() ? "USR" : "ADM");
+                userRepository.save(user);
+                return ResponseEntity.status(HttpStatus.CREATED).body(
                         new ApiResponse(true, "Novo usuário criado com sucesso!"));
             } catch (DataAccessException e) {
-                response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                         new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
         else
         {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao criar novo usuário. " + String.join(" ", handleErrors))
-            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Falha ao atualizar usuário.", handleErrors));
         }
-        return response;
     }
+
 
     public void updateJwtToken(String email, String jwtToken) {
         List<String> handleErrors = userException.handleUpdateTokenErrors(email, jwtToken);
@@ -71,7 +70,7 @@ public class UserService {
     public ResponseEntity<ApiResponse> updateUser(Integer id, User updatedUser) {
         Optional<User> user = userRepository.findById(id);
         ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = userException.handleUpdateUserErrors(id, updatedUser);
+        Map<String, String> handleErrors = userException.handleUpdateUserErrors(id, updatedUser);
 
         if (handleErrors.isEmpty()){
             try {
@@ -88,8 +87,7 @@ public class UserService {
         else
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao atualizar usuário. " + String.join(" ", handleErrors))
-            );
+                    new ApiResponse(false, "Falha ao atualizar usuário. ", handleErrors));
         }
         return response;
 

@@ -1,5 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.controller;
 
+import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import br.ufsm.poow2.biblioteca_rest.security.JWTUtil;
 import br.ufsm.poow2.biblioteca_rest.service.UserService;
@@ -58,19 +59,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signUp(@RequestBody User user){
-        System.out.println("recebido requisição " + user.getEmail());
-        try{
-            userService.addUser(user);
-        }catch(Exception E){
-            E.printStackTrace();
-            return new ResponseEntity<>(
-                    "Erro",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-
-        return null;
+    public ResponseEntity<ApiResponse> signUp(@RequestBody User user){
+        return userService.addUser(user);
     }
 
 }
