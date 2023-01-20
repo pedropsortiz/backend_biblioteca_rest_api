@@ -35,7 +35,7 @@ public class UserService {
             try {
                 user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
                 user.setToken(new JWTUtil().geraToken(user));
-                userRepository.save(user);
+                user.setPermission(user.getPermission() == null || user.getPermission().isEmpty() ? "USR" : "ADM");                userRepository.save(user);
                 response = ResponseEntity.status(HttpStatus.CREATED).body(
                         new ApiResponse(true, "Novo usuário criado com sucesso!"));
             } catch (DataAccessException e) {

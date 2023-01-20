@@ -10,14 +10,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.PrintStream;
-
 @RestController
-public class LoginController {
+@CrossOrigin
+public class AuthenticationController {
 
     @Autowired
     UserService userService;
@@ -50,6 +50,22 @@ public class LoginController {
             E.printStackTrace();
             return new ResponseEntity<>(
                     "Usuário ou senha incorretos",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        return null;
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Object> signUp(@RequestBody User user){
+        System.out.println("recebido requisição " + user.getEmail());
+        try{
+            userService.addUser(user);
+        }catch(Exception E){
+            E.printStackTrace();
+            return new ResponseEntity<>(
+                    "Erro",
                     HttpStatus.BAD_REQUEST
             );
         }
