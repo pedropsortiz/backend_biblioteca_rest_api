@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @ControllerAdvice
 public class UserException {
@@ -62,33 +63,33 @@ public class UserException {
         return apiResponse.getErrors();
     }
 
-    public List<String> handleDeleteUserErrors(Integer id) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleDeleteUserErrors(Integer id) {
+        ApiResponse apiResponse = new ApiResponse();
 
         if (id == null){
-            errors.add("O ID do usuário não pode ser nulo.");
+            apiResponse.addError("id", "O ID do usuário não pode ser nulo.");
         }
         else if (!doesUserExistById(id)){
-            errors.add("O usuário especificado não foi encontrado ou não existe.");
+            apiResponse.addError("name", "O usuário especificado não foi encontrado ou não existe.");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleUpdateTokenErrors(String email, String jwtToken) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleUpdateTokenErrors(String email, String jwtToken) {
+        ApiResponse apiResponse = new ApiResponse();
 
         if (email == null || email.trim().isEmpty()) {
-            errors.add("O email não pode ser nulo ou vazio");
+            apiResponse.addError("email", "O email não pode ser nulo ou vazio");
         }
         if (jwtToken == null || jwtToken.trim().isEmpty()) {
-            errors.add("O token JWT não pode ser nulo ou vazio");
+            apiResponse.addError("token", "O token JWT não pode ser nulo ou vazio");
         }
         if (!doesUserExistByEmail(email)) {
-            errors.add("O usuário com o email especificado não foi encontrado");
+            apiResponse.addError("email","O usuário com o email especificado não foi encontrado");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
     public boolean doesUserExistById(Integer id) {
@@ -104,7 +105,7 @@ public class UserException {
     }
 
     public boolean isPermissionValid(String permission) {
-        return permission == "USR"|| permission == "ADM";
+        return Objects.equals(permission, "USR") || Objects.equals(permission, "ADM");
     }
 
     public boolean isNameValid(String name) {
