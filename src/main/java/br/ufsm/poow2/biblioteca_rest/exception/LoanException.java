@@ -1,5 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.exception;
 
+import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.model.Loan;
 import br.ufsm.poow2.biblioteca_rest.model.User;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class LoanException {
@@ -16,47 +18,47 @@ public class LoanException {
     @Autowired
     LoanRepository loanRepository;
 
-    public List<String> handleAddLoanErrors(Loan loan, Book book, User user) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleAddLoanErrors(Loan loan, Book book, User user) {
+        ApiResponse apiResponse = new ApiResponse();
 
         if (isValidLoanDates(loan)){
-            errors.add("O formato das datas de empréstimo e de retorno não é válido.");
+            apiResponse.addError("loan_date", "O formato das datas de empréstimo e de retorno não é válido.");
         }
         if (hasOverdueLoan(user)) {
-            errors.add("Usuário não pode realizar novos empréstimos com empréstimos atrasados.");
+            apiResponse.addError("user", "Usuário não pode realizar novos empréstimos com empréstimos atrasados.");
         }
 
         if (!isBookAvailable(book)) {
-            errors.add("O livro não está disponível para empréstimo.");
+            apiResponse.addError("book", "O livro não está disponível para empréstimo.");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleExtendLoanErrors(Loan loan){
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleExtendLoanErrors(Loan loan){
+        ApiResponse apiResponse = new ApiResponse();
 
         if(isLoanValid(loan.getId())){
-            errors.add("O empréstimo selecionado não existe ou não foi encontrado.");
+            apiResponse.addError("loan", "O empréstimo selecionado não existe ou não foi encontrado.");
         }
         if(!loan.isExtended()){
-            errors.add("O empréstimo selecionado já foi extendido uma vez.");
+            apiResponse.addError("status", "O empréstimo selecionado já foi extendido uma vez.");
         }
         if(loan.getStatus() != Loan.LoanStatus.APPROVED){
-            errors.add("O status do empréstimo não é válido para extensão de data.");
+            apiResponse.addError("extended", "O status do empréstimo não é válido para extensão de data.");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleReturnBookErrors(Integer idLoan){
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleReturnBookErrors(Integer idLoan){
+        ApiResponse apiResponse = new ApiResponse();
 
         if(isLoanValid(idLoan)){
-            errors.add("O empréstimo selecionado não existe ou não foi encontrado.");
+            apiResponse.addError("loan", "O empréstimo selecionado não existe ou não foi encontrado.");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
     public boolean hasOverdueLoan(User user) {

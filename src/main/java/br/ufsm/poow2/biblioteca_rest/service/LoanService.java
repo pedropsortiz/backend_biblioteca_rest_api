@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -39,7 +36,7 @@ public class LoanService {
         ResponseEntity<ApiResponse> response;
         Loan loan = new Loan();
         loan.update(loanDto, user, book);
-        List<String> handleErrors = loanException.handleAddLoanErrors(loan, book, user);
+        Map<String, String> handleErrors = loanException.handleAddLoanErrors(loan, book, user);
 
         if (handleErrors.isEmpty()) {
             try {
@@ -56,7 +53,7 @@ public class LoanService {
         else
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao criar novo empréstimo. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao criar novo empréstimo.", handleErrors)
             );
         }
         return response;
@@ -86,7 +83,7 @@ public class LoanService {
     public ResponseEntity<ApiResponse> extendLoan(Integer idEmprestimo) {
         ResponseEntity<ApiResponse> response;
         Loan loan = loanRepository.findById(idEmprestimo).get();
-        List<String> handleErrors = loanException.handleExtendLoanErrors(loan);
+        Map<String, String> handleErrors = loanException.handleExtendLoanErrors(loan);
 
         if (handleErrors.isEmpty()) {
             try {
@@ -106,7 +103,7 @@ public class LoanService {
         else
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao extender empréstimo. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao extender empréstimo.", handleErrors)
             );
         }
         return response;
@@ -114,7 +111,7 @@ public class LoanService {
 
     public ResponseEntity<ApiResponse> returnBook(LoanDto loanDto) {
         ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = loanException.handleReturnBookErrors(loanDto.getId());
+        Map<String, String> handleErrors = loanException.handleReturnBookErrors(loanDto.getId());
 
         if (handleErrors.isEmpty()) {
             try {
@@ -140,7 +137,7 @@ public class LoanService {
         else
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao encerrar empréstimo. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao encerrar empréstimo.", handleErrors)
             );
         }
         return response;

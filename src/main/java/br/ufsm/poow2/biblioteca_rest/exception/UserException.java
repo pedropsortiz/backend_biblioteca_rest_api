@@ -22,7 +22,7 @@ public class UserException {
     private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$";
 
         public Map<String, String> handleAddUserErrors(User user) {
-            ApiResponse apiResponse = new ApiResponse(false, "Falha ao criar novo usuário.");
+        ApiResponse apiResponse = new ApiResponse();
 
         if (!isEmailValid(user.getEmail())) {
             apiResponse.addError("email", "Email inválido. O email deve conter um nome de usuário seguido de um sinal '@' e um domínio, por exemplo, 'usuario@dominio.com'");        }
@@ -47,7 +47,7 @@ public class UserException {
     }
 
     public Map<String, String> handleUpdateUserErrors(Integer id, User user) {
-        ApiResponse apiResponse = new ApiResponse(false, "Falha ao criar novo usuário.");
+        ApiResponse apiResponse = new ApiResponse();
         User userRepo = userRepository.findById(id).orElse(null);
 
         if (userRepo.equals(null)){
