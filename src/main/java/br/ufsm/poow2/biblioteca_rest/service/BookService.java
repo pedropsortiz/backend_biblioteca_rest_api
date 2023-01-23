@@ -2,6 +2,7 @@ package br.ufsm.poow2.biblioteca_rest.service;
 
 import br.ufsm.poow2.biblioteca_rest.DTO.BookDto;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
+import br.ufsm.poow2.biblioteca_rest.exception.BookException;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.repository.BookRepository;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,11 +24,13 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final AuthorService authorService;
+    private final BookException bookException;
 
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorService authorService) {
+    public BookService(BookRepository bookRepository, AuthorService authorService, BookException bookException) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
+        this.bookException = bookException;
     }
 
     /*
@@ -36,40 +40,9 @@ public class BookService {
     //Adicionar Livro no banco de dados
     public ResponseEntity<ApiResponse> addBook(BookDto dto, Author author) {
         ResponseEntity<ApiResponse> response;
+        Map<String, String> handleErrors = bookException.handleAddBookErrors(dto, author);
 
-        boolean isNameValid = isNameValid(dto.getTitle());
-        boolean isDescriptionValid = isDescriptionValid(dto.getDescription());
-        boolean isAuthorValid = authorService.getAuthorById(dto.getAuthorId()) != null;
-        boolean isTotalQuantityValid = isTotalQuantityValid(dto.getTotalQuantity());
-        boolean isInUseQuantityValid = isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity());
-        boolean doesBookAlredyExists = doesBookAlredyExists(dto, author);
-
-        if (!doesBookAlredyExists)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação"));
-        }
-        else if (!isNameValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O título do livro é inválido ou está vazio. O tamanho mínimo é de 3 caracteres."));
-        }
-        else if (!isDescriptionValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A descrição do livro é inválida ou tem menos de 10 caracteres."));
-        }
-        else if (!isAuthorValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O autor do livro é inválido ou não foi preenchido."));
-        }
-        else if (!isTotalQuantityValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A quantidade total do livro é inválida ou é menor que zero."));
-        }
-        else if (!isInUseQuantityValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A quantidade em uso do livro é inválida ou é menor que zero ou maior que a quantidade total."));
-        }
-        else
-        {
+        if (handleErrors.isEmpty()) {
             try {
                 Book book = new Book();
                 book.update(dto, author);
@@ -79,6 +52,13 @@ public class BookService {
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
+        else
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ApiResponse(false, "Falha ao criar novo livro.", handleErrors)
+            );
+        }
+
         return response;
     }
 
@@ -102,47 +82,12 @@ public class BookService {
     //Atualizar Livro
     public ResponseEntity<ApiResponse> updateBook(BookDto dto, Integer id){
         ResponseEntity<ApiResponse> response;
+        Map<String, String> handleErrors = bookException.handleDeleteBookErrors(id);
+
         Book book = bookRepository.findById(id).orElse(null);
         Optional<Author> author = authorService.getOneAuthor(dto.getAuthorId());
 
-        boolean isBookValid = book != null;
-        boolean isAuthorValid = author.isPresent();
-        boolean isNameValid = isNameValid(dto.getTitle());
-        boolean isDescriptionValid = isDescriptionValid(dto.getDescription());
-        boolean isTotalQuantityValid = isTotalQuantityValid(dto.getTotalQuantity());
-        boolean isInUseQuantityValid = isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity());
-        boolean doesBookAlredyExists = doesBookAlredyExists(dto, author.get());
-
-        if (!doesBookAlredyExists)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação"));
-        }
-        else if (!isBookValid)
-        {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O livro selecionado não existe ou não foi encontrado"));
-        }
-        else if (!isNameValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O título do livro é inválido ou está vazio. O tamanho mínimo é de 3 caracteres."));
-        }
-        else if (!isDescriptionValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A descrição do livro é inválida ou tem menos de 10 caracteres."));
-        }
-        else if (!isAuthorValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "O autor do livro é inválido ou não foi preenchido."));
-        }
-        else if (!isTotalQuantityValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A quantidade total do livro é inválida ou é menor que zero."));
-        }
-        else if (!isInUseQuantityValid)
-        {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "A quantidade em uso do livro é inválida ou é menor que zero ou maior que a quantidade total."));
-        }
-        else
-        {
+        if (handleErrors.isEmpty()) {
             try {
                 book.update(dto, author.get());
                 bookRepository.save(book);
@@ -151,22 +96,22 @@ public class BookService {
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
+        else
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ApiResponse(false, "Falha ao atualizar livro.", handleErrors)
+            );
+        }
+
         return response;
     }
 
     //Deletar livro
     public ResponseEntity<ApiResponse> deleteBookById(Integer id) {
         ResponseEntity<ApiResponse> response;
-        Book bookOptional = bookRepository.findById(id).orElse(null);
+        Map<String, String> handleErrors = bookException.handleDeleteBookErrors(id);
 
-        boolean doesBookExists = bookOptional != null;
-
-        if (!doesBookExists)
-        {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "O livro não existe ou não foi encontrado!"));
-        }
-        else
-        {
+        if (handleErrors.isEmpty()) {
             try {
                 bookRepository.deleteById(id);
                 response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O livro foi excluido com sucesso!"));
@@ -174,22 +119,23 @@ public class BookService {
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
+        else
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ApiResponse(false, "Falha ao deletar livro.", handleErrors)
+            );
+        }
+
         return response;
     }
 
     //Exibir um livro pelo ID
     public ResponseEntity<ApiResponse> getBookById(Integer id)  {
-        Book book = bookRepository.findById(id).orElse(null);
         ResponseEntity<ApiResponse> response;
+        Book book = bookRepository.findById(id).orElse(null);
+        Map<String, String> handleErrors = bookException.handleGetBookErrors(id);
 
-        boolean doesBookExists = (book == null) ? false : true;
-
-        if (!doesBookExists)
-        {
-            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, "Livro não encontrado"));
-        }
-        else
-        {
+        if (handleErrors.isEmpty()) {
             try {
                 Gson gson = new Gson();
                 String jsonBook = gson.toJson(book);
@@ -198,31 +144,14 @@ public class BookService {
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Erro de acesso a data"));
             }
         }
+        else
+        {
+            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ApiResponse(false, "Falha ao buscar livro.", handleErrors)
+            );
+        }
+
         return response;
-    }
-
-    /*
-    Testes de validação de campos
-     */
-
-    public boolean isNameValid(String name) {
-        return name != null && !name.trim().isEmpty() && name.trim().length() >= 3;
-    }
-
-    public boolean isDescriptionValid(String description) {
-        return description == null || !description.trim().isEmpty() && description.trim().length() >= 10;
-    }
-
-    public boolean isTotalQuantityValid(int totalQuantity) {
-        return totalQuantity >= 0;
-    }
-
-    public boolean isInUseQuantityValid(int inUseQuantity, int totalQuantity) {
-        return inUseQuantity >= 0 && inUseQuantity <= totalQuantity;
-    }
-
-    public boolean doesBookAlredyExists(BookDto bookDto, Author author){
-        return bookRepository.findBookByTitleAndAuthorAndEditionAndPublicationDate(bookDto.getTitle(), author, bookDto.getEdition(), bookDto.getPublicationDate()) != null;
     }
 
 }
