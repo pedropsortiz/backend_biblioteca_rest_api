@@ -52,7 +52,7 @@ public class UserService {
 
 
     public void updateJwtToken(String email, String jwtToken) {
-        List<String> handleErrors = userException.handleUpdateTokenErrors(email, jwtToken);
+        Map<String, String> handleErrors = userException.handleUpdateTokenErrors(email, jwtToken);
         if (handleErrors.isEmpty()) {
             User user = userRepository.findUserByEmail(email);
             user.setToken(jwtToken);
@@ -99,7 +99,7 @@ public class UserService {
 
     public ResponseEntity<ApiResponse> deleteUserById(Integer userId) {
         ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = userException.handleDeleteUserErrors(userId);
+        Map<String, String> handleErrors = userException.handleDeleteUserErrors(userId);
 
         if (handleErrors.isEmpty()){
             try {
@@ -114,7 +114,7 @@ public class UserService {
         else
         {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao deletar usuário. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao deletar usuário. ", handleErrors)
             );
         }
         return response;

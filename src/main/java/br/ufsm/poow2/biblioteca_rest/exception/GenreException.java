@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @ControllerAdvice
@@ -25,42 +26,42 @@ public class GenreException {
 
     private static final Pattern GENRE_NAME_PATTERN = Pattern.compile("^[a-zA-ZÀ-ÿ\\-\\s]{3,100}$");
 
-    public List<String> handleAddGenreErrors(Genre genre) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleAddGenreErrors(Genre genre) {
+        ApiResponse apiResponse = new ApiResponse();
 
         if (!doesGenreExists(genre))
         {
-            errors.add("Falha ao criar novo gênero! Caracteres inválidos.");
+            apiResponse.addError("name", "Falha ao criar novo gênero! Caracteres inválidos.");
         }
         if (!isValidGenreName(genre.getName()))
         {
-            errors.add("Falha ao criar novo gênero! Gênero já existente");
+            apiResponse.addError("name", "Falha ao criar novo gênero! Gênero já existente");
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleUpdateGenreErrors(Integer id, Genre genre) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String>handleUpdateGenreErrors(Integer id, Genre genre) {
+        ApiResponse apiResponse = new ApiResponse();
         Genre genreRepo = genreRepository.findById(id).orElse(null);
 
         if (genreRepo.equals(null)){
-            errors.add("Usuário não encontrado ou não existe!");
+            apiResponse.addError("name", "Usuário não encontrado ou não existe!");
         }else{
-            errors = handleAddGenreErrors(genre);
+            apiResponse.setErrors(handleAddGenreErrors(genre));
         }
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
-    public List<String> handleDeleteGenreErrors(Integer id) {
-        List<String> errors = new ArrayList<>();
+    public Map<String, String> handleDeleteGenreErrors(Integer id) {
+        ApiResponse apiResponse = new ApiResponse();
 
         Genre genreRepo = genreRepository.findById(id).orElse(null);
         if (genreRepo==null)
-            errors.add("Falha ao excluir gênero. O gênero selecionado não existe ou não foi encontrado");
+            apiResponse.addError("name", "Falha ao excluir gênero. O gênero selecionado não existe ou não foi encontrado");
 
-        return errors;
+        return apiResponse.getErrors();
     }
 
     private boolean isValidGenreName(String genderName) {

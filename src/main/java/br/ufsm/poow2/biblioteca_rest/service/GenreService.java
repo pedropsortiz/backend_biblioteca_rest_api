@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,7 @@ public class GenreService {
 
     public ResponseEntity<ApiResponse> addGenre(Genre genre){
         ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = genreException.handleAddGenreErrors(genre);
+        Map<String, String> handleErrors = genreException.handleAddGenreErrors(genre);
 
         if (handleErrors.isEmpty()){
             try {
@@ -36,7 +37,7 @@ public class GenreService {
             }
         }else {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao criar novo usuário. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao criar novo usuário. ", handleErrors)
             );
         }
         return response;
@@ -52,7 +53,7 @@ public class GenreService {
 
     public ResponseEntity<ApiResponse> updateGenre(Integer id, Genre updatedGenre) {
         Optional<Genre> genreOptional = genreRepository.findById(id);
-        List<String> handleErrors = genreException.handleUpdateGenreErrors(id, updatedGenre);
+        Map<String, String> handleErrors = genreException.handleUpdateGenreErrors(id, updatedGenre);
         ResponseEntity<ApiResponse> response;
 
         if (handleErrors.isEmpty()){
@@ -66,7 +67,7 @@ public class GenreService {
             }
         }else {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao editar gênero. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao editar gênero. ", handleErrors)
             );
         }
         return response;
@@ -74,7 +75,7 @@ public class GenreService {
 
     public ResponseEntity<ApiResponse> deleteGenreById(Integer id) {
         ResponseEntity<ApiResponse> response;
-        List<String> handleErrors = genreException.handleDeleteGenreErrors(id);
+        Map<String, String> handleErrors = genreException.handleDeleteGenreErrors(id);
 
         if (handleErrors.isEmpty()){
             try {
@@ -85,7 +86,7 @@ public class GenreService {
             }
         }else {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse(false, "Falha ao deletar gênero. " + String.join(" ", handleErrors))
+                    new ApiResponse(false, "Falha ao deletar gênero. ", handleErrors)
             );
         }
         return response;

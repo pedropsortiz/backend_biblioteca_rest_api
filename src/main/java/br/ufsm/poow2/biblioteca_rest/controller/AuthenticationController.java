@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @CrossOrigin
 public class AuthenticationController {
@@ -27,7 +29,7 @@ public class AuthenticationController {
     AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> autenticacao(@RequestBody User user){
+    public ResponseEntity<ApiResponse> autenticacao(@RequestBody User user){
         try{
             final Authentication authentication = this.authenticationManager
                     .authenticate(
@@ -45,13 +47,15 @@ public class AuthenticationController {
                 userService.updateJwtToken(user.getEmail(), token);
                 User userResponse = userService.findUserByEmail(user.getEmail());
 
-                return new ResponseEntity<>(userResponse, HttpStatus.OK);
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Autenticação bem sucedida!"));
             }
         }catch(Exception E){
             E.printStackTrace();
-            return new ResponseEntity<>(
-                    "Usuário ou senha incorretos",
-                    HttpStatus.BAD_REQUEST
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(
+                    false,
+                    "Falha ao atualizar usuário.",
+                    Map.of("email","Email ou senha estão incorretos.")
+                )
             );
         }
 
