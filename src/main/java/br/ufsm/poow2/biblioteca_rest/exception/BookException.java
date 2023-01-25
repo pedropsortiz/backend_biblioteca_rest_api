@@ -28,15 +28,15 @@ public class BookException {
     public Map<String, String> handleAddBookErrors(BookDto bookDto, Author author) {
         ApiResponse apiResponse = new ApiResponse();
 
-        if (!doesBookAlredyExists(bookDto, author))
+        if (!(doesBookAlredyExists(bookDto, author)))
         {
-            apiResponse.addError("title", "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação");
+            //apiResponse.addError("title", "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação");
         }
-        if (!isNameValid(bookDto.getTitle()))
+        if (!(isNameValid(bookDto.getTitle())))
         {
             apiResponse.addError("title", "O título do livro é inválido ou está vazio. O tamanho mínimo é de 3 caracteres.");
         }
-        if (!isDescriptionValid(bookDto.getDescription()))
+        if (!(isDescriptionValid(bookDto.getDescription())))
         {
             apiResponse.addError("description", "A descrição do livro é inválida ou tem menos de 10 caracteres.");
         }
@@ -44,11 +44,11 @@ public class BookException {
         {
             apiResponse.addError("author", "O autor do livro é inválido ou não foi preenchido.");
         }
-        if (!isTotalQuantityValid(bookDto.getTotalQuantity()))
+        if (!(isTotalQuantityValid(bookDto.getTotalQuantity())))
         {
             apiResponse.addError("total_quantity", "A quantidade total do livro é inválida ou é menor que zero.");
         }
-        if (!isInUseQuantityValid(bookDto.getInUseQuantity(), bookDto.getTotalQuantity()))
+        if (!(isInUseQuantityValid(bookDto.getInUseQuantity(), bookDto.getTotalQuantity())))
         {
             apiResponse.addError("total_quantity", "A quantidade em uso do livro é inválida ou é menor que zero ou maior que a quantidade total.");
         }
@@ -61,7 +61,7 @@ public class BookException {
         Book book = bookRepository.findById(id).orElse(null);
         Optional<Author> author = authorService.getOneAuthor(dto.getAuthorId());
 
-        if (!doesBookAlredyExists(dto, author.get()))
+        if (!(doesBookAlredyExists(dto, author.get())))
         {
             apiResponse.addError("title", "O livro registrado já existe no banco de dados. Altere a edição ou a data de publicação");
         }
@@ -69,23 +69,23 @@ public class BookException {
         {
             apiResponse.addError("title", "O livro selecionado não existe ou não foi encontrado");
         }
-        if (!isNameValid(dto.getTitle()))
+        if (!(isNameValid(dto.getTitle())))
         {
             apiResponse.addError("title", "O título do livro é inválido ou está vazio. O tamanho mínimo é de 3 caracteres.");
         }
-        if (!isDescriptionValid(dto.getDescription()))
+        if (!(isDescriptionValid(dto.getDescription())))
         {
             apiResponse.addError("description", "A descrição do livro é inválida ou tem menos de 10 caracteres.");
         }
-        if (!author.isPresent())
+        if (!(author.isPresent()))
         {
             apiResponse.addError("author", "O autor do livro é inválido ou não foi preenchido.");
         }
-        if (!isTotalQuantityValid(dto.getTotalQuantity()))
+        if (!(isTotalQuantityValid(dto.getTotalQuantity())))
         {
             apiResponse.addError("totalQuantity", "A quantidade total do livro é inválida ou é menor que zero.");
         }
-        if (!isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity()))
+        if (!(isInUseQuantityValid(dto.getInUseQuantity(), dto.getTotalQuantity())))
         {
             apiResponse.addError("inUseQuantity", "A quantidade em uso do livro é inválida ou é menor que zero ou maior que a quantidade total.");
         }
@@ -99,7 +99,7 @@ public class BookException {
 
         boolean doesBookExists = bookOptional != null;
 
-        if (!doesBookExists)
+        if (!(doesBookExists))
         {
             apiResponse.addError("idBook", "O livro não existe ou não foi encontrado!");
         }
@@ -113,7 +113,7 @@ public class BookException {
 
         boolean doesBookExists = (book == null) ? false : true;
 
-        if (!doesBookExists)
+        if (!(doesBookExists))
         {
             apiResponse.addError("idBook", "Livro não encontrado");
         }

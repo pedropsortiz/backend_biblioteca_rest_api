@@ -29,13 +29,13 @@ public class GenreException {
     public Map<String, String> handleAddGenreErrors(Genre genre) {
         ApiResponse apiResponse = new ApiResponse();
 
-        if (!doesGenreExists(genre))
-        {
-            apiResponse.addError("name", "Falha ao criar novo gênero! Caracteres inválidos.");
-        }
-        if (!isValidGenreName(genre.getName()))
+        if (doesGenreExists(genre))
         {
             apiResponse.addError("name", "Falha ao criar novo gênero! Gênero já existente");
+        }
+        if (!(isValidGenreName(genre.getName())))
+        {
+            apiResponse.addError("name", "Falha ao criar novo gênero! Caracteres inválidos.");
         }
 
         return apiResponse.getErrors();
@@ -70,6 +70,7 @@ public class GenreException {
     }
 
     private boolean doesGenreExists(Genre genre){
+        System.out.println(genreRepository.findGenreByName(genre.getName()));
         return genreRepository.findGenreByName(genre.getName()) != null;
     }
 }

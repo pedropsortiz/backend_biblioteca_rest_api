@@ -26,15 +26,15 @@ public class AuthorException {
     public Map<String, String> handleAddAuthorErrors(Author author) {
         ApiResponse apiResponse = new ApiResponse();
 
-        if (!doesAuthorExists(author.getName()))
+        if (doesAuthorExists(author.getName()))
         {
             apiResponse.addError("name", "Falha ao criar o autor. O autor já está registrado no banco de dados.");
         }
-        if (!isNameValid(author.getName()))
+        if (!(isNameValid(author.getName())))
         {
             apiResponse.addError("name", "Falha ao criar o autor. O nome do autor deve conter apenas letras, acentos ou o caractere especial ç.");
         }
-        if (!isDeathDateValid(author.getDeathDate(), author.getBirthDate()))
+        if (!(isDeathDateValid(author.getDeathDate(), author.getBirthDate())))
         {
             apiResponse.addError("death_date", "Falha ao criar o autor. A data de morte ocorre antes da data de nascimento.");
         }
@@ -46,20 +46,20 @@ public class AuthorException {
         ApiResponse apiResponse = new ApiResponse();
         Author author = authorRepository.findById(id).orElse(null);
 
-        if (!doesAuthorExists(author.getName()))
+        if (doesAuthorExists(author.getName()))
         {
             apiResponse.addError("author", "Falha ao criar o autor. O autor já está registrado no banco de dados.");
         }
-        if (!doesAuthorExists(updatedAuthor.getName()))
+        if (!(doesAuthorExists(updatedAuthor.getName())))
         {
             // Retorna mensagem de erro caso o autor não exista
             apiResponse.addError("name", "O autor não existe ou não foi encontrado!");
         }
-        if (!isNameValid(author.getName()))
+        if (!(isNameValid(author.getName())))
         {
             apiResponse.addError("name", "Falha ao criar o autor. O nome do autor deve conter apenas letras, acentos ou o caractere especial ç.");
         }
-        if (!isDeathDateValid(author.getDeathDate(), author.getBirthDate()))
+        if (!(isDeathDateValid(author.getDeathDate(), author.getBirthDate())))
         {
             apiResponse.addError("birth_date", "Falha ao editar o autor. A data de morte ocorre depois da data de nascimento.");
         }
@@ -72,7 +72,7 @@ public class AuthorException {
         Optional<Author> author = authorRepository.findById(id);
 
         // Verifica se o autor foi encontrado
-        if (!doesAuthorExists(author.get().getName()))
+        if (!(doesAuthorExists(author.get().getName())))
         {
             apiResponse.addError("name", "O autor não existe ou não foi encontrado!");
         }
@@ -84,7 +84,7 @@ public class AuthorException {
         ApiResponse apiResponse = new ApiResponse();
         Author author = authorRepository.findById(id).orElse(null);
 
-        if (!doesAuthorExists(author.getName()))
+        if (!(doesAuthorExists(author.getName())))
         {
             apiResponse.addError("idAuthor", "Autor não encontrado");
         }

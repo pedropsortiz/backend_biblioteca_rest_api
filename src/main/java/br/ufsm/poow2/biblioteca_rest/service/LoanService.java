@@ -65,14 +65,20 @@ public class LoanService {
         return dto;
     }
 
-    public List<LoanDto> findAllLoans() {
+    public List<Loan> findAllLoans() {
         List<Loan> loanList = loanRepository.findAll();
+        return loanList;
+    }
 
-        List<LoanDto> dtoList = new ArrayList<>();
-        for (Loan loan: loanList) {
-            dtoList.add(getLoan(loan));
-        }
-        return dtoList;
+    public LoanDto getLoan(Loan loan, User user, Book book) {
+        LoanDto loanDto = new LoanDto();
+        loanDto.setLoanDate(loan.getLoanDate());
+        loanDto.setReturnDate(loan.getReturnDate());
+        loanDto.setUserId(user.getId());
+        loanDto.setBookId(book.getId());
+        loanDto.setStatus(loan.getStatus());
+        loanDto.setExtended(loan.isExtended());
+        return loanDto;
     }
 
     public void deleteLoanById(Integer loanId) {

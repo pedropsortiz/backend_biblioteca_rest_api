@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/genre")
+@CrossOrigin
 public class GenreController {
 
    @Autowired

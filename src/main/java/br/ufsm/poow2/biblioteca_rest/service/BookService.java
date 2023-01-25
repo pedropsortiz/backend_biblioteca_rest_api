@@ -71,12 +71,13 @@ public class BookService {
     }
 
     //Exibir os livros pelo banco
-    public List<BookDto> findAllBooks() {
+    public List<Book> findAllBooks() {
         List<Book> books = bookRepository.findAll();
-
-        return books.stream()
-                .map(this::mapToBookDto)
-                .collect(Collectors.toList());
+        for (Book book : books) {
+            Optional<Author> author = authorService.findById(book.getAuthor().getId());
+            book.setAuthor(author.get());
+        }
+        return books;
     }
 
     //Atualizar Livro

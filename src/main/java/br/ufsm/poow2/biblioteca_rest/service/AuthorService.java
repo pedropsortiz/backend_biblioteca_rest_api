@@ -130,4 +130,7 @@ public class AuthorService {
         return authorRepository.findById(id);
     }
 
+    public Optional<Author> findById(Integer id) {
+        return authorRepository.findById(id);
+    }
 }

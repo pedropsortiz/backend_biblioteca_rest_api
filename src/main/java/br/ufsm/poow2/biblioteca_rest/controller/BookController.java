@@ -3,6 +3,7 @@ package br.ufsm.poow2.biblioteca_rest.controller;
 import br.ufsm.poow2.biblioteca_rest.DTO.BookDto;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
+import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.repository.AuthorRepository;
 import br.ufsm.poow2.biblioteca_rest.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/book")
+@CrossOrigin
 public class BookController {
 
     private final BookService bookService;
@@ -32,9 +34,9 @@ public class BookController {
         return bookService.addBook(bookDto, optionalAuthor.get());
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<BookDto>> listBooks(){
-        List<BookDto> allLivros = bookService.findAllBooks();
+    @GetMapping("/list")
+    public ResponseEntity<List<Book>> listBooks(){
+        List<Book> allLivros = bookService.findAllBooks();
         return new ResponseEntity<>(allLivros, HttpStatus.OK);
     }
 

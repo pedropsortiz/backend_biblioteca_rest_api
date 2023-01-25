@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/livro_genero")
+@CrossOrigin
 public class BookGenreController {
 
     @Autowired

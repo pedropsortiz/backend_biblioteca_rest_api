@@ -3,6 +3,7 @@ package br.ufsm.poow2.biblioteca_rest.controller;
 import br.ufsm.poow2.biblioteca_rest.DTO.LoanDto;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
+import br.ufsm.poow2.biblioteca_rest.model.Loan;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import br.ufsm.poow2.biblioteca_rest.repository.BookRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.UserRepository;
@@ -16,7 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/emprestimo")
+@RequestMapping("/loan")
+@CrossOrigin
 public class LoanController {
 
     @Autowired
@@ -28,22 +30,22 @@ public class LoanController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/criar")
+    @PostMapping("/add")
     public ResponseEntity<ApiResponse> addLoan(@RequestBody LoanDto loanDto){
         Optional<Book> optionalBook = bookRepository.findById(loanDto.getBookId());
         Optional<User> usuarioOptional = userRepository.findById(loanDto.getUserId());
         return loanService.addLoan(loanDto, optionalBook.get(), usuarioOptional.get());
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<LoanDto>> listLoans(){
-        List<LoanDto> allEmprestimos = loanService.findAllLoans();
+    @GetMapping("/list")
+    public ResponseEntity<List<Loan>>  listLoans(){
+        List<Loan> allEmprestimos = loanService.findAllLoans();
         return new ResponseEntity<>(allEmprestimos, HttpStatus.OK);
     }
 
-    @PostMapping("/extender/{idEmprestimo}")
-    public ResponseEntity<ApiResponse> extendLoan(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
-        return loanService.extendLoan(idEmprestimo);
+    @PostMapping("/listOne/{id}")
+    public ResponseEntity<ApiResponse> extendLoan(@PathVariable("id") Integer id) throws Exception {
+        return loanService.extendLoan(id);
     }
 
     @PostMapping("/return")
@@ -51,9 +53,9 @@ public class LoanController {
         return loanService.returnBook(loanDto);
     }
 
-    @PostMapping("/deletar/{idEmprestimo}")
-    public ResponseEntity<ApiResponse> deleteLoan(@PathVariable("idEmprestimo") Integer idEmprestimo) throws Exception {
-        loanService.deleteLoanById(idEmprestimo);
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteLoan(@PathVariable("id") Integer id) throws Exception {
+        loanService.deleteLoanById(id);
         return new ResponseEntity<>(new ApiResponse(true, "Empréstimo deletado com sucesso!"), HttpStatus.OK);
     }
 
