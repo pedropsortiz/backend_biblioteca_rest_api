@@ -4,7 +4,7 @@ import br.ufsm.poow2.biblioteca_rest.DTO.AuthorGenreDto;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.model.AuthorGenre;
 import br.ufsm.poow2.biblioteca_rest.model.Genre;
-import br.ufsm.poow2.biblioteca_rest.repository.AuthorGenderRepository;
+import br.ufsm.poow2.biblioteca_rest.repository.AuthorGenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class AuthorGenreService {
 
     @Autowired
-    AuthorGenderRepository authorGenderRepository;
+    AuthorGenreRepository authorGenreRepository;
 
     public void addAuthorGender(Author author, Genre genre) {
         if (author == null || genre == null) {
@@ -25,7 +25,7 @@ public class AuthorGenreService {
         AuthorGenre authorGenre = new AuthorGenre();
         authorGenre.setAuthor(author);
         authorGenre.setGenre(genre);
-        authorGenderRepository.save(authorGenre);
+        authorGenreRepository.save(authorGenre);
     }
 
     public AuthorGenreDto mapToAuthorGenderDto(AuthorGenre authorGenre) {
@@ -37,7 +37,7 @@ public class AuthorGenreService {
     }
 
     public List<AuthorGenreDto> listAllAuthorGenderDtos() {
-        List<AuthorGenre> authorGenders = authorGenderRepository.findAll();
+        List<AuthorGenre> authorGenders = authorGenreRepository.findAll();
         return authorGenders.stream()
                 .map(this::mapToAuthorGenderDto)
                 .collect(Collectors.toList());

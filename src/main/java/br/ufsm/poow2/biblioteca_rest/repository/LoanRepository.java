@@ -1,5 +1,6 @@
 package br.ufsm.poow2.biblioteca_rest.repository;
 
+import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.model.Loan;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,10 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Transactional(readOnly = true)
     List<Loan> findLoansByUser(User user);
+
+    @Transactional(readOnly = true)
+    Integer countByUser(User user);
+
+    @Transactional(readOnly = true)
+    Integer countByBook(Book book);
 }

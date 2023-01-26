@@ -5,7 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
 
@@ -42,7 +44,7 @@ public class Author {
 
     @Column(name = "death_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private Date deathDate;
+    private java.util.Date deathDate;
 
     @ApiModelProperty(example = "null")
     @Column(name = "description")

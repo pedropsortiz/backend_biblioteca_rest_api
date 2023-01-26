@@ -15,4 +15,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
                                                               Author author,
                                                               int edition,
                                                               Date publicationDate);
+
+    @Transactional(readOnly = true)
+    Integer countByAuthor(Author author);
 }

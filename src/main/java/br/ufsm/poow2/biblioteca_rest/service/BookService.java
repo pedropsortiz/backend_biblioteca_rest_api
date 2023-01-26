@@ -5,7 +5,9 @@ import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.exception.BookException;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
+import br.ufsm.poow2.biblioteca_rest.repository.BookGenreRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.BookRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +28,14 @@ public class BookService {
     private final AuthorService authorService;
     private final BookException bookException;
 
+    private final BookGenreRepository bookGenreRepository;
+
     @Autowired
-    public BookService(BookRepository bookRepository, AuthorService authorService, BookException bookException) {
+    public BookService(BookRepository bookRepository, AuthorService authorService, BookException bookException, BookGenreRepository bookGenreRepository) {
         this.bookRepository = bookRepository;
         this.authorService = authorService;
         this.bookException = bookException;
+        this.bookGenreRepository = bookGenreRepository;
     }
 
     /*
@@ -38,7 +43,7 @@ public class BookService {
      */
 
     //Adicionar Livro no banco de dados
-    public ResponseEntity<ApiResponse> addBook(BookDto dto, Author author) {
+    public ResponseEntity<ApiResponse> addBook(BookDto dto, Author author) throws JsonProcessingException {
         ResponseEntity<ApiResponse> response;
         Map<String, String> handleErrors = bookException.handleAddBookErrors(dto, author);
 
@@ -114,6 +119,7 @@ public class BookService {
 
         if (handleErrors.isEmpty()) {
             try {
+                bookGenreRepository.deleteByBook(bookRepository.findById(id).get());
                 bookRepository.deleteById(id);
                 response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O livro foi excluido com sucesso!"));
             } catch (DataAccessException e){

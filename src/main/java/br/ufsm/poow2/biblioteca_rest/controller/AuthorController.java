@@ -3,6 +3,7 @@ package br.ufsm.poow2.biblioteca_rest.controller;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.service.AuthorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,8 @@ public class AuthorController {
         return authorService.listAllAuthors();
     }
 
-    @PostMapping("/listOne/{id}")
-    public ResponseEntity<ApiResponse> listOneAuthor(@PathVariable("id") Integer id){
+    @GetMapping("/listOne/{id}")
+    public ResponseEntity<ApiResponse> listOneAuthor(@PathVariable("id") Integer id) throws JsonProcessingException {
         return authorService.getAuthorById(id);
     }
 

@@ -6,8 +6,11 @@ import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.model.Loan;
 import br.ufsm.poow2.biblioteca_rest.model.User;
+import br.ufsm.poow2.biblioteca_rest.repository.BookGenreRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.BookRepository;
+import br.ufsm.poow2.biblioteca_rest.repository.LoanRepository;
 import br.ufsm.poow2.biblioteca_rest.service.AuthorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +28,13 @@ public class BookException {
     @Autowired
     AuthorService authorService;
 
-    public Map<String, String> handleAddBookErrors(BookDto bookDto, Author author) {
+    @Autowired
+    LoanRepository loanRepository;
+
+    @Autowired
+    BookGenreRepository bookGenreRepository;
+
+    public Map<String, String> handleAddBookErrors(BookDto bookDto, Author author) throws JsonProcessingException {
         ApiResponse apiResponse = new ApiResponse();
 
         if (!(doesBookAlredyExists(bookDto, author)))
@@ -103,8 +112,15 @@ public class BookException {
         {
             apiResponse.addError("idBook", "O livro não existe ou não foi encontrado!");
         }
+        if(hasForeignKeyReferences(id)){
+            apiResponse.addError("name", "Não é possível deletar este livro pois ele está em empréstimos ativos. É necessário fechar todos os empréstimos atribuídos a este livro antes de deletá-lo.");
+        }
 
         return apiResponse.getErrors();
+    }
+
+    private boolean hasForeignKeyReferences(Integer id) {
+        return loanRepository.countByBook(bookRepository.findById(id).get()) > 0;
     }
 
     public Map<String, String> handleGetBookErrors(Integer id) {

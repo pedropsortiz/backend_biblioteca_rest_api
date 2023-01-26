@@ -6,6 +6,7 @@ import br.ufsm.poow2.biblioteca_rest.model.Author;
 import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.repository.AuthorRepository;
 import br.ufsm.poow2.biblioteca_rest.service.BookService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addBook(@RequestBody BookDto bookDto){
+    public ResponseEntity<ApiResponse> addBook(@RequestBody BookDto bookDto) throws JsonProcessingException {
         Optional<Author> optionalAuthor = authorRepository.findById(bookDto.getAuthorId());
         return bookService.addBook(bookDto, optionalAuthor.get());
     }

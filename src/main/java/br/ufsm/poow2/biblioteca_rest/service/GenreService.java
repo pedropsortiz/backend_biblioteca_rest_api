@@ -3,6 +3,8 @@ package br.ufsm.poow2.biblioteca_rest.service;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.exception.GenreException;
 import br.ufsm.poow2.biblioteca_rest.model.Genre;
+import br.ufsm.poow2.biblioteca_rest.repository.AuthorGenreRepository;
+import br.ufsm.poow2.biblioteca_rest.repository.BookGenreRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ public class GenreService {
     @Autowired
     GenreException genreException;
 
+    @Autowired
+    BookGenreRepository bookGenreRepository;
 
     public ResponseEntity<ApiResponse> addGenre(Genre genre){
         ResponseEntity<ApiResponse> response;
@@ -79,6 +83,7 @@ public class GenreService {
 
         if (handleErrors.isEmpty()){
             try {
+                bookGenreRepository.deleteByGenre(genreRepository.findById(id).get());
                 genreRepository.deleteById(id);
                 response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(false, "Gênero deletado com sucesso."));
             } catch (Exception e) {

@@ -4,6 +4,7 @@ import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import br.ufsm.poow2.biblioteca_rest.security.JWTUtil;
 import br.ufsm.poow2.biblioteca_rest.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -30,6 +32,10 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> autenticacao(@RequestBody User user){
+        System.out.println("Teste: " + user.getEmail() + " - " + user.getPassword());
+        if (user == null || user.getEmail() == null || user.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Email ou senha não podem ser nulos."));
+        }
         try{
             final Authentication authentication = this.authenticationManager
                     .authenticate(
@@ -39,23 +45,20 @@ public class AuthenticationController {
                     );
 
             if (authentication.isAuthenticated()){
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 System.out.println("Gerando TOCKEN de autenticação");
                 String token = new JWTUtil().geraToken(user);
-                userService.updateJwtToken(user.getEmail(), token);
                 User userResponse = userService.findUserByEmail(user.getEmail());
-
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Autenticação bem sucedida!"));
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Autenticação bem sucedida!", userResponse, token));
             }
+
         }catch(Exception E){
             E.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(
-                    false,
-                    "Falha ao atualizar usuário.",
-                    Map.of("email","Email ou senha estão incorretos.")
-                )
+                            false,
+                            "Falha ao atualizar usuário.",
+                            Map.of("email","Email ou senha estão incorretos.")
+                    )
             );
         }
 

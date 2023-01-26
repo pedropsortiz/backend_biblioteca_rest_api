@@ -6,12 +6,13 @@ import br.ufsm.poow2.biblioteca_rest.model.Book;
 import br.ufsm.poow2.biblioteca_rest.model.Loan;
 import br.ufsm.poow2.biblioteca_rest.model.User;
 import br.ufsm.poow2.biblioteca_rest.repository.AuthorRepository;
+import br.ufsm.poow2.biblioteca_rest.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,6 +21,9 @@ public class AuthorException {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    BookRepository bookRepository;
 
     private static final String AUTHOR_REGEX = "^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ\\s]*$";
 
@@ -76,8 +80,15 @@ public class AuthorException {
         {
             apiResponse.addError("name", "O autor não existe ou não foi encontrado!");
         }
+        if(hasForeignKeyReferences(id)){
+            apiResponse.addError("name", "Não é possível deletar este autor pois ele possui livros ativos. É necessário deletar todos os livros atribuídos a este autor antes de deletá-lo.");
+        }
 
         return apiResponse.getErrors();
+    }
+
+    private boolean hasForeignKeyReferences(Integer id) {
+        return bookRepository.countByAuthor(authorRepository.findById(id).get()) > 0;
     }
 
     public Map<String, String> handleGetAuthorByIdErrors(Integer id) {
@@ -104,7 +115,7 @@ public class AuthorException {
         return name.matches(AUTHOR_REGEX);
     }
 
-    private boolean isDeathDateValid(Date dateOfDeath, Date dateOfBirth) {
+    private boolean isDeathDateValid(java.util.Date dateOfDeath, Date dateOfBirth) {
         // Verifica se a data de morte é nula ou se a data de morte ocorre depois da data de nascimento
         return dateOfDeath == null || dateOfDeath.after(dateOfBirth);
     }

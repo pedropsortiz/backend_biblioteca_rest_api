@@ -2,6 +2,7 @@ package br.ufsm.poow2.biblioteca_rest.exception;
 
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.User;
+import br.ufsm.poow2.biblioteca_rest.repository.LoanRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,10 @@ public class UserException {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    LoanRepository loanRepository;
+
     private static final String NAME_REGEX = "^[A-Za-z\u00C0-\u017FÇç\s][A-Za-z\u00C0-\u017FÇç\s]([A-Za-z\u00C0-\u017FÇç\s])$";
     private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-=])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$";
 
@@ -35,7 +40,7 @@ public class UserException {
             apiResponse.addError("permission",  "Papéis de usuário não reconhecidos.");
         }
 
-        if (!isNameValid((user.getName()))) {
+        if (isNameValid((user.getName()))) {
             apiResponse.addError("name", "Nome de usuário inválido. O nome de usuário deve ser maior que uma palavra e pode conter apenas letras acentos e o caractere 'ç'");
         }
 
@@ -69,11 +74,18 @@ public class UserException {
         if (id == null){
             apiResponse.addError("id", "O ID do usuário não pode ser nulo.");
         }
-        else if (!doesUserExistById(id)){
+        if (!doesUserExistById(id)){
             apiResponse.addError("name", "O usuário especificado não foi encontrado ou não existe.");
+        }
+        if(hasForeignKeyReferences(id)){
+            apiResponse.addError("name", "Não é possível deletar este usuário pois ele possui empréstimos ativos. É necessário fechar todos os empréstimos atribuídos a este usuário antes de deletá-lo.");
         }
 
         return apiResponse.getErrors();
+    }
+
+    private boolean hasForeignKeyReferences(Integer id) {
+        return loanRepository.countByUser(userRepository.findById(id).get()) > 0;
     }
 
     public Map<String, String> handleUpdateTokenErrors(String email, String jwtToken) {

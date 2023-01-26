@@ -3,7 +3,10 @@ package br.ufsm.poow2.biblioteca_rest.service;
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.exception.AuthorException;
 import br.ufsm.poow2.biblioteca_rest.model.Author;
+import br.ufsm.poow2.biblioteca_rest.repository.AuthorGenreRepository;
 import br.ufsm.poow2.biblioteca_rest.repository.AuthorRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -20,13 +23,21 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorException authorException;
 
+    private final AuthorGenreRepository authorGenreRepository
+            ;
+
     @Autowired
-    public AuthorService(AuthorRepository authorRepository, AuthorException authorException) {
+    public AuthorService(AuthorRepository authorRepository, AuthorException authorException, AuthorGenreRepository authorGenreRepository
+    ) {
         this.authorRepository = authorRepository;
         this.authorException = authorException;
+        this.authorGenreRepository
+                = authorGenreRepository
+        ;
     }
 
     public ResponseEntity<ApiResponse> addAuthor(Author author) {
+        System.out.println(author.getBirthDate());
         ResponseEntity<ApiResponse> response;
         Map<String, String> handleErrors = authorException.handleAddAuthorErrors(author);
 
@@ -35,6 +46,8 @@ public class AuthorService {
                 authorRepository.save(author);
                 response = ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Novo autor criado com sucesso!"));
             } catch (DataAccessException e){
+                System.out.println(author.getDeathDate());
+                System.out.println(e.toString());
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Ocorreu um erro ao acessar o banco de dados. Por favor, tente novamente mais tarde."));
             }
         }
@@ -87,6 +100,8 @@ public class AuthorService {
         {
             // Exclui o autor do repositório
             try {
+                authorGenreRepository
+                        .deleteByAuthor(authorRepository.findById(id).get());
                 authorRepository.deleteById(id);
                 response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "O autor foi excluido com sucesso!"));
             } catch (DataAccessException e){
@@ -102,16 +117,18 @@ public class AuthorService {
         return response;
     }
 
-    public ResponseEntity<ApiResponse> getAuthorById(Integer id) {
+    public ResponseEntity<ApiResponse> getAuthorById(Integer id) throws JsonProcessingException {
         ResponseEntity<ApiResponse> response;
         Map<String, String> handleErrors = authorException.handleGetAuthorByIdErrors(id);
         Author author = authorRepository.findById(id).orElse(null);
 
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = mapper.writeValueAsString(author);
 
         if (handleErrors.isEmpty())
         {
             try {
-                response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, author.toString()));
+                response = ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, jsonString));
             } catch (DataAccessException e) {
                 response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Erro de acesso a data"));
             }
