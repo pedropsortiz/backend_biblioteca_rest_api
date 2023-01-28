@@ -2,6 +2,7 @@ package br.ufsm.poow2.biblioteca_rest.controller;
 
 import br.ufsm.poow2.biblioteca_rest.common.ApiResponse;
 import br.ufsm.poow2.biblioteca_rest.model.User;
+import br.ufsm.poow2.biblioteca_rest.repository.UserRepository;
 import br.ufsm.poow2.biblioteca_rest.security.JWTUtil;
 import br.ufsm.poow2.biblioteca_rest.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,9 +31,12 @@ public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    UserRepository userRepository;
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> autenticacao(@RequestBody User user){
-        System.out.println("Teste: " + user.getEmail() + " - " + user.getPassword());
+        User userCredentials = userRepository.findUserByEmail(user.getEmail());
         if (user == null || user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Email ou senha não podem ser nulos."));
         }
@@ -47,9 +51,8 @@ public class AuthenticationController {
             if (authentication.isAuthenticated()){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 System.out.println("Gerando TOCKEN de autenticação");
-                String token = new JWTUtil().geraToken(user);
-                User userResponse = userService.findUserByEmail(user.getEmail());
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Autenticação bem sucedida!", userResponse, token));
+                String token = new JWTUtil().geraToken(userCredentials);
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(true, "Autenticação bem sucedida!", userCredentials, token));
             }
 
         }catch(Exception E){

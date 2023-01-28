@@ -37,7 +37,7 @@ public class UserException {
         }
 
         if (isPermissionValid(user.getPermission())) {
-            apiResponse.addError("permission",  "Papéis de usuário não reconhecidos.");
+//            apiResponse.addError("permission",  "Papéis de usuário não reconhecidos.");
         }
 
         if (isNameValid((user.getName()))) {
